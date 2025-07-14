@@ -1,0 +1,242 @@
+export ZSH=$HOME/.oh-my-zsh
+ZSH_THEME="robbyrussell"
+plugins=(
+  git
+  zsh-autosuggestions
+)
+
+source $ZSH/oh-my-zsh.sh
+
+# ===========================
+# User configuration
+# ===========================
+set -o vi
+
+alias cdm='cd "${$(pwd)/test/main}"'
+alias cdt='cd "${$(pwd)/main/test}"'
+alias ta='tmux a'
+
+alias cdg='cd `git rev-parse --show-toplevel`'
+alias gc='git checkout'
+alias gdc='git diff --cached'
+alias gm='git checkout master'
+alias gp='git pull'
+alias gs='git status'
+
+alias python="python3"
+alias p3="python3"
+alias pv='python --version'
+alias jl='jupyter lab --ContentsManager.allow_hidden=True'
+
+# ===========================
+# fzf
+# ===========================
+cdf() {
+  _file=$(fzf)
+  [ -n "$_file" ] && cd "$(dirname "$_file")"
+}
+
+cpf() {
+  _file=$(fzf)
+  # strip whitespace and newlines
+  [ -n "$_file" ] && echo "$_file" | tr -d '[:space:]' | pbcopy
+}
+
+pdf() {
+  _file=$(fzf)
+  # strip whitespace and newlines
+  [ -n "$_file" ] && eval "zathura $_file &"
+}
+
+# Set up fzf key bindings and fuzzy completion
+source <(fzf --zsh)
+
+# ===========================
+# Python
+# ===========================
+PY_ENV_TOOL="uv" # "conda" or "uv"
+
+if [[ "$PY_ENV_TOOL" == "conda" ]]; then
+  # >>> conda initialize >>>
+  # !! Contents within this block are managed by 'conda init' !!
+  #
+  __conda_setup="$('~/anaconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+  if [ $? -eq 0 ]; then
+      eval "$__conda_setup"
+  else
+      if [ -f "~/anaconda3/etc/profile.d/conda.sh" ]; then
+          . "~/anaconda3/etc/profile.d/conda.sh"
+      else
+          export PATH="$PATH:~/anaconda3/bin"
+      fi
+  fi
+  unset __conda_setup
+  #
+  # <<< conda initialize <<<
+fi
+
+if [[ "$PY_ENV_TOOL" == "uv" ]]; then
+  . "$HOME/.local/bin/env"
+fi
+
+python_env() {
+  _py_version=$(python --version | awk -F'[ \.]' '{print $2"."$3}')
+
+  _py_env=""
+  [[ "$CONDA_DEFAULT_ENV" != "" ]] && _py_env="conda:${CONDA_DEFAULT_ENV}"
+  [[ "$VIRTUAL_ENV" != "" ]] && _py_env="uv:${VIRTUAL_ENV_PROMPT}"
+
+  if [[ "$_py_env" != "" ]]; then
+    echo "%{$fg_bold[blue]%}py${_py_version}:[%{$fg[yellow]%}${_py_env}%{$fg_bold[blue]%}]%{$reset_color%}"
+  else
+    echo ""
+  fi
+}
+
+# ===========================
+# Docker
+# ===========================
+function drun() {
+  # assert current directory is not home directory
+  if [ "$(pwd)" = "$HOME" ]; then
+    echo "Error: Cannot run docker from home directory."
+    return 1
+  fi
+
+  #cp ~/.dockerrc .dockerrc
+  #
+  if [ -z "$1" ]; then
+    echo "Usage: drun <image_name>"
+    return 1
+  fi
+
+  image_name="$1"
+  shift
+
+  if [ -z "$1" ]; then
+    docker run --rm -it -v "$(pwd):/workspace" -w "/workspace" "$image_name" /bin/bash
+  else
+    docker run --rm -it "$image_name" "$@"
+  fi
+}
+
+# ===========================
+# PROMPT
+# ===========================
+ZSH_THEME_GIT_PROMPT_PREFIX="%{$fg_bold[blue]%}git:(%{$fg[red]%}"
+ZSH_THEME_GIT_PROMPT_SUFFIX="%{$reset_color%} "
+ZSH_THEME_GIT_PROMPT_DIRTY="%{$fg[blue]%}) %{$fg[yellow]%}%1{✗%}"
+ZSH_THEME_GIT_PROMPT_CLEAN="%{$fg[blue]%})"
+
+# faster git
+git_prompt() {
+  if [ "$(git rev-parse --is-inside-work-tree 2> /dev/null)" = "true" ]; then
+    _git_branch="$(git rev-parse --abbrev-ref HEAD 2>/dev/null)"
+
+    echo "${ZSH_THEME_GIT_PROMPT_PREFIX}${_git_branch}${ZSH_THEME_GIT_PROMPT_CLEAN}${ZSH_THEME_GIT_PROMPT_SUFFIX}"
+    return 
+
+    if [[ $(git diff --shortstat 2> /dev/null | tail -n1) != "" ]]; then
+      _git_status=$ZSH_THEME_GIT_PROMPT_DIRTY
+    else
+      _git_status=$ZSH_THEME_GIT_PROMPT_CLEAN
+    fi
+
+    echo "${ZSH_THEME_GIT_PROMPT_PREFIX}${_git_branch}${_git_status}${ZSH_THEME_GIT_PROMPT_SUFFIX}"
+  fi
+}
+
+set_prompt () {
+  P_ARROW="%(?:%{$fg_bold[green]%}%1{➜%}:%{$fg_bold[red]%}%1{➜%})"
+  P_PATH="%{$fg[cyan]%}%~%{$reset_color%}"
+  P_DIR="%{$fg[cyan]%}%1~%{$reset_color%}"
+  P_PYTHON="$(python_env)"
+  P_GIT="$(git_prompt)"
+  P_TIME="%{$fg[cyan]%}[%D{%y/%m/%f}%@]%{$reset_color%}"
+
+  PROMPT="${P_PATH} ${P_PYTHON} ${P_GIT}"
+  PROMPT="${PROMPT}"$'\n'"${P_ARROW} "
+  RPROMPT="${P_TIME}"
+}
+precmd_functions+=set_prompt
+set_prompt
+
+# ===========================
+# neovim
+# ===========================
+nvim_listen() {
+  _force=0
+  if [[ "$1" == "-f" ]]; then
+    _force=1
+    shift 1
+  fi
+  _nvim_sock=${1:-/tmp/nvim.sock}
+  if [ -S $_nvim_sock ]; then
+    if [[ "$_force" == "1" ]]; then
+      rm $_nvim_sock
+    else
+      echo "$_nvim_sock already exists. use '-f' to force start."
+      return 1
+    fi
+  fi
+
+  while [ ! -S $_nvim_sock ]; do
+    echo "Listening for Neovim socket on [${_nvim_sock}] ..."
+    nvim --headless --listen ${_nvim_sock}
+    if [ -S $_nvim_sock ]; then
+      rm $_nvim_sock
+    fi
+    echo "Connection interrupted, restarting listener..."
+  done
+}
+
+nvim_connect() {
+  _nvim_sock=${1:-/tmp/nvim.sock}
+  if [ -S $_nvim_sock ]; then
+    echo "Connecting to Neovim socket ${_nvim_sock} ..."
+    neovide --fork --server $_nvim_sock
+  else
+    echo "No Neovim socket found at ${_nvim_sock}."
+  fi
+}
+
+nvim_clean() {
+  _nvim_sock=${1:-/tmp/nvim.sock}
+  if pgrep -f "nvim --headless --listen ${_nvim_sock}"; then
+    echo "Neovim is running. Please close it before cleaning the socket."
+    return 1
+  fi
+  if [ -S $_nvim_sock ]; then
+    echo "Removing Neovim socket ${_nvim_sock} ..."
+    rm -f $_nvim_sock
+  else
+    echo "No Neovim socket found at ${_nvim_sock}."
+  fi
+}
+
+nvim_launch() {
+  _nvim_sock=${1:-/tmp/nvim.sock}
+
+  if [ -S $_nvim_sock ]; then
+    echo "Socket ${_nvim_sock} already exists, trying to clean it up..."
+    if ! nvim_clean $_nvim_sock; then
+      echo "Failed to clean up existing socket. Please stop the listener first, or use 'nvim_connect' instead."
+      return 1
+    else
+      echo "Socket cleaned up successfully."
+    fi
+  fi
+
+  # cannot call tmux_listen because tmux does not inherit shell functions 
+  tmux new-session -d -s "[ephemeral] nvim listen" "nvim --headless --listen $_nvim_sock"
+  sleep 1
+  nvim_connect $_nvim_sock
+}
+
+alias vim='neovide --fork'
+alias vl=nvim_launch
+
+# ===========================
+# Extra local configurations
+# ===========================
+[ -f ~/.zshrc_local ] && source ~/.zshrc_local

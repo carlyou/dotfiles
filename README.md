@@ -2,6 +2,7 @@
 
 - .vimrc (deprecated)
 - .zshrc
-- .config/nvim
-- .config/zathura
+- .config
+  - nvim
+  - zathura
 

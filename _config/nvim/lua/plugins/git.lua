@@ -9,5 +9,24 @@ return {
     opts = {},
   },
 
-  { 'sindrets/diffview.nvim', opts = {} },
+  {
+    'sindrets/diffview.nvim',
+    opts = {},
+    keys = {
+      {
+        '<leader>dfo',
+        function()
+          require('diffview').open()
+        end,
+        desc = 'Open Diffview',
+      },
+      {
+        '<leader>dfc',
+        function()
+          require('diffview').close()
+        end,
+        desc = 'Close Diffview',
+      },
+    },
+  },
 }

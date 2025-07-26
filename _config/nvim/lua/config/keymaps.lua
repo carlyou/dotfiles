@@ -1,6 +1,10 @@
 vim.keymap.set('n', '<leader>e', function()
   vim.cmd(':lua vim.print(' .. vim.fn.getreg '+' .. ')')
-end, { noremap = true, silent = true, desc = '[Execute] and print yanked command' })
+end, { noremap = true, silent = true, desc = '[e]xecute and print yanked command' })
+
+vim.keymap.set('n', '<leader>w', function()
+  vim.wo.wrap = not vim.wo.wrap
+end, { noremap = true, silent = true, desc = 'Toggle line [w]rapping' })
 
 -- prevent backspace from exiting commenting
 vim.keymap.set('c', '<BS>', function()
@@ -12,14 +16,19 @@ vim.keymap.set('c', '<BS>', function()
 end, { expr = true, noremap = true })
 
 vim.keymap.set('v', 'Y', '"+y')
-vim.keymap.set('n', '<Space>', '<cmd>nohlsearch<CR>')
-vim.keymap.set({ 'n', 'v' }, '0', '^')
+vim.keymap.set('n', '<Space>', '<cmd>nohlsearch<cr>')
+vim.keymap.set('n', 'n', 'nzz', { noremap = true, silent = true })
+vim.keymap.set('n', 'N', 'Nzz', { noremap = true, silent = true })
+vim.keymap.set('n', '*', '*zz', { noremap = true, silent = true })
+vim.keymap.set('n', '#', '#zz', { noremap = true, silent = true })
+
+--vim.keymap.set({ 'n', 'v' }, '0', '^')
 
 vim.keymap.set('n', '-', '<C-w><', { noremap = true, silent = true, desc = 'Narrower window' })
 vim.keymap.set('n', '+', '<C-w>>', { noremap = true, silent = true, desc = 'Wider window' })
 
-vim.keymap.set('v', 'J', ":m '>+1<CR>gv=gv", { noremap = true, silent = true })
-vim.keymap.set('v', 'K', ":m '<-2<CR>gv=gv", { noremap = true, silent = true })
+--vim.keymap.set('v', 'J', ":m '>+1<cr>gv=gv", { noremap = true, silent = true })
+--vim.keymap.set('v', 'K', ":m '<-2<cr>gv=gv", { noremap = true, silent = true })
 
 -- Common shortcuts with command modifier
 -- 1. copy/paste with command+c/v
@@ -43,7 +52,7 @@ vim.keymap.set('c', '<D-v>', function()
 end, { noremap = true, silent = true })
 
 -- 2. tab create/close/select
-vim.keymap.set('n', '<D-t>', '<cmd>tabnew<CR>', { noremap = true, silent = true })
+vim.keymap.set('n', '<D-t>', '<cmd>tabnew<cr>', { noremap = true, silent = true })
 -- Close tab with command+w, but if only one tab is open, close window within the tab instead
 vim.keymap.set('n', '<D-w>', function()
   local tab_count = vim.fn.tabpagenr '$'
@@ -63,18 +72,31 @@ vim.keymap.set('n', '<D-6>', '6gt', { noremap = true, silent = true })
 vim.keymap.set('n', '<D-7>', '7gt', { noremap = true, silent = true })
 vim.keymap.set('n', '<D-8>', '8gt', { noremap = true, silent = true })
 vim.keymap.set('n', '<D-9>', '9gt', { noremap = true, silent = true })
-vim.keymap.set('n', '<D-0>', '<cmd>tablast<CR>', { noremap = true, silent = true })
-vim.keymap.set('n', '<D-[>', '<cmd>tabprevious<CR>', { noremap = true, silent = true })
-vim.keymap.set('n', '<D-]>', '<cmd>tabnext<CR>', { noremap = true, silent = true })
+vim.keymap.set('n', '<D-[>', '<cmd>tabprevious<cr>', { noremap = true, silent = true })
+vim.keymap.set('n', '<D-]>', '<cmd>tabnext<cr>', { noremap = true, silent = true })
 
--- 3. ctrl-n/p/f/b in edit
---vim.keymap.set('i', '<C-f>', '<Right>', { noremap = true, silent = true })
---vim.keymap.set('i', '<C-b>', '<Left>', { noremap = true, silent = true })
---vim.keymap.set('i', '<C-n>', '<Down>', { noremap = true, silent = true })
---vim.keymap.set('i', '<C-p>', '<Up>', { noremap = true, silent = true })
+-- 3. Zoom in/out
+vim.keymap.set('n', '<D-=>', function()
+  vim.g.neovide_scale_factor = vim.g.neovide_scale_factor + 0.1
+end, { noremap = true, silent = true, desc = '[Zoom] Increase Neovide scale factor' })
+vim.keymap.set('n', '<D-->', function()
+  vim.g.neovide_scale_factor = vim.g.neovide_scale_factor - 0.1
+end, { noremap = true, silent = true, desc = '[Zoom] Decrease Neovide scale factor' })
+vim.keymap.set('n', '<D-0>', function()
+  vim.g.neovide_scale_factor = 1.0
+end, { noremap = true, silent = true, desc = '[Zoom] Reset Neovide scale factor' })
 
 -- Terminal
-vim.keymap.set('n', '<leader><leader>t', '<cmd>vs<CR><cmd>terminal<CR>', { noremap = true, silent = true, desc = 'Open [t]erminal in split on right' })
+-- keymap to open a terminal in a split window, or just to the buffer if it already exists
+vim.keymap.set('n', '<leader>t', function()
+  if vim.fn.bufexists 'term://*' == 1 then
+    vim.cmd 'b term://*'
+  else
+    vim.cmd 'vs'
+    vim.cmd 'terminal'
+  end
+end, { noremap = true, silent = true, desc = '[T]erminal' })
+vim.keymap.set('n', '<leader><leader>t', '<cmd>vs<cr><cmd>terminal<cr>', { noremap = true, silent = true, desc = 'Open [t]erminal in split on right' })
 
 -- Diagnostic
 vim.keymap.set('n', '<leader><leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
@@ -85,16 +107,15 @@ vim.keymap.set('n', '<leader><leader>q', vim.diagnostic.setloclist, { desc = 'Op
 --
 -- NOTE: This won't work in all terminal emulators/tmux/etc. Try your own mapping
 -- or just use <C-\><C-n> to exit terminal mode
-vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n><C-w><C-w>', { desc = 'Exit terminal mode' })
 vim.keymap.set('t', '<C-z>', '<C-\\><C-n><C-w><C-w>', { noremap = true, silent = true })
---vim.keymap.set('t', '<D-v>', '<C-r>+', { noremap = true, silent = true })
+vim.keymap.set('t', '<C-w><C-w>', '<C-\\><C-n><C-w><C-w>', { noremap = true, silent = true })
+vim.keymap.set('t', '<C-p>', '<Up>', { noremap = true, silent = true })
+vim.keymap.set('t', '<C-n>', '<Down>', { noremap = true, silent = true })
+vim.keymap.set('t', '<C-f>', '<Right>', { noremap = true, silent = true })
+vim.keymap.set('t', '<C-b>', '<Left>', { noremap = true, silent = true })
 
 -- Keybinds to make split navigation easier.
 --  Use CTRL+<hjkl> to switch between windows
 --  See `:help wincmd` for a list of all window commands
-vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
 vim.keymap.set('n', 'HH', '<C-w><C-h>', { desc = 'Move focus to the left window' })
-vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
 vim.keymap.set('n', 'LL', '<C-w><C-l>', { desc = 'Move focus to the right window' })
-vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
-vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })

@@ -1,0 +1,11 @@
+set selection-clipboard clipboard
+set incremental-search true
+set window-title-basename true
+
+#map d scroll half-down
+#map u scroll half-up
+map f scroll full-down
+map b scroll full-up
+
+map k feedkeys "<C-Up>"
+map j feedkeys "<C-Down>"

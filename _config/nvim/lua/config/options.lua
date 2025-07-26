@@ -2,6 +2,8 @@
 vim.opt.guifont = 'Monaco:h12'
 vim.opt.winblend = 50
 
+vim.g.neovide_input_macos_option_key_is_meta = 'only_left'
+
 vim.g.neovide_opacity = 0.90
 vim.g.neovide_normal_opacity = 0.90
 vim.g.neovide_show_border = true
@@ -24,6 +26,7 @@ vim.opt.autoindent = true
 vim.cmd [[filetype plugin indent on]]
 vim.cmd [[syntax on]]
 
+vim.opt.wrap = false
 vim.opt.number = true
 vim.opt.relativenumber = true
 

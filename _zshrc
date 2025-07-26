@@ -14,6 +14,7 @@ set -o vi
 
 alias cdm='cd "${$(pwd)/test/main}"'
 alias cdt='cd "${$(pwd)/main/test}"'
+alias cdp="cd ~/project"
 alias ta='tmux a'
 
 alias cdg='cd `git rev-parse --show-toplevel`'
@@ -25,6 +26,7 @@ alias gs='git status'
 
 alias python="python3"
 alias p3="python3"
+alias p="python3"
 alias pv='python --version'
 alias jl='jupyter lab --ContentsManager.allow_hidden=True'
 
@@ -46,6 +48,12 @@ pdf() {
   _file=$(fzf)
   # strip whitespace and newlines
   [ -n "$_file" ] && eval "zathura $_file &"
+}
+
+nf() {
+  _file=$(fzf)
+  # strip whitespace and newlines
+  [ -n "$_file" ] && eval "vim $_file &"
 }
 
 # Set up fzf key bindings and fuzzy completion
@@ -82,15 +90,11 @@ fi
 python_env() {
   _py_version=$(python --version | awk -F'[ \.]' '{print $2"."$3}')
 
-  _py_env=""
+  _py_env="default"
   [[ "$CONDA_DEFAULT_ENV" != "" ]] && _py_env="conda:${CONDA_DEFAULT_ENV}"
   [[ "$VIRTUAL_ENV" != "" ]] && _py_env="uv:${VIRTUAL_ENV_PROMPT}"
 
-  if [[ "$_py_env" != "" ]]; then
-    echo "%{$fg_bold[blue]%}py${_py_version}:[%{$fg[yellow]%}${_py_env}%{$fg_bold[blue]%}]%{$reset_color%}"
-  else
-    echo ""
-  fi
+  echo "%{$fg_bold[blue]%}python:[%{$fg[cyan]%}${_py_env}:${_py_version}%{$fg_bold[blue]%}]%{$reset_color%}"
 }
 
 # ===========================
@@ -147,19 +151,30 @@ git_prompt() {
 }
 
 set_prompt () {
+  # if $P_COUNTER is missing, set it to 1
+  if [[ -z "$P_CNT" ]]; then
+    P_CNT=1
+  else
+    P_CNT=$((P_CNT+1))
+  fi
+
   P_ARROW="%(?:%{$fg_bold[green]%}%1{➜%}:%{$fg_bold[red]%}%1{➜%})"
-  P_PATH="%{$fg[cyan]%}%~%{$reset_color%}"
+  P_PATH="%{$fg[yellow]%}%~%{$reset_color%}"
   P_DIR="%{$fg[cyan]%}%1~%{$reset_color%}"
   P_PYTHON="$(python_env)"
   P_GIT="$(git_prompt)"
-  P_TIME="%{$fg[cyan]%}[%D{%y/%m/%f}%@]%{$reset_color%}"
+  P_LEFT="${P_PATH} ${P_PYTHON} ${P_GIT}"
 
-  PROMPT="${P_PATH} ${P_PYTHON} ${P_GIT}"
-  PROMPT="${PROMPT}"$'\n'"${P_ARROW} "
-  RPROMPT="${P_TIME}"
+  P_TIME="%{$fg[cyan]%}[%D{%y/%m/%f} %@]%{$reset_color%}"
+  P_COUNTER="%{$fg[yellow]%}[#${P_CNT}]%{$reset_color%}"
+  P_RIGHT="${P_TIME}${P_COUNTER}" 
+
+  PROMPT="${P_LEFT}"$'\n'"${P_ARROW} "
+  RPROMPT="${P_RIGHT}"
 }
 precmd_functions+=set_prompt
 set_prompt
+
 
 # ===========================
 # neovim

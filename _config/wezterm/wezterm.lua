@@ -54,7 +54,7 @@ config.keys = {
 	},
 }
 
-config.color_scheme = "tokyonight_moon"
+config.color_scheme = "Tokyo Night Moon"
 --config.color_scheme = "Cobalt2"
 
 config.window_padding = {

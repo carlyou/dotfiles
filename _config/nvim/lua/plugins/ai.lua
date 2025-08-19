@@ -45,7 +45,7 @@ return {
       },
     },
     opts = {
-      model = 'o4-mini',
+      --model = 'o4-mini',
       mappings = {
         submit_prompt = {
           normal = '<CR>',

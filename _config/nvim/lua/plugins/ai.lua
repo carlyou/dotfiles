@@ -2,7 +2,7 @@ return {
   {
     'github/copilot.vim',
     init = function()
-      vim.g.copilot_node_command = '~/.nvm/versions/node/v22.11.0/bin/node'
+      vim.g.copilot_node_command = '/opt/homebrew/bin/node'
       --vim.g.copilot_no_tab_map = true
       vim.cmd [[inoremap <silent><script><expr> <C-i> copilot#Accept("\t")]]
     end,
@@ -21,7 +21,7 @@ return {
       return select.visual(source) or select.buffer(source)
     end,
     keys = {
-      { '<leader>ac', '<cmd>CopilotChatToggle<cr>', desc = 'Copilot Chat Toggle' },
+      { '<leader>aac', '<cmd>CopilotChatToggle<cr>', desc = 'Copilot Chat Toggle' },
       {
         '<leader>a<space>',
         function()
@@ -43,11 +43,9 @@ return {
         mode = 'v',
         desc = 'Copilot Chat Explain',
       },
-      { '<leader>ap', '<cmd>CopilotChatPrompts<cr>', desc = 'Copilot Chat Prompts' },
-      { '<leader>af', '<cmd>CopilotChatFix<cr>', desc = 'Copilot Chat Fix' },
     },
     opts = {
-      --model = 'o4-mini',
+      model = 'o4-mini',
       mappings = {
         submit_prompt = {
           normal = '<CR>',
@@ -60,5 +58,36 @@ return {
     },
     lazy = false,
     enabled = true,
+  },
+
+  {
+    'coder/claudecode.nvim',
+    dependencies = { 'folke/snacks.nvim' },
+    opts = {
+      log_level = 'trace',
+      auto_start = false,
+      terminal = {
+        provider = 'snacks',
+      },
+      diff_opts = {
+        keep_terminal_open = true,
+      },
+    },
+    config = true,
+    keys = {
+      { '<leader>acc', '<cmd>ClaudeCode<cr>', desc = '[a]i [c]laude: Open/Toggle claude [c]ode' },
+      { '<leader>acf', '<cmd>ClaudeCodeFocus<cr>', desc = '[a]i [c]laude: [f]ocus' },
+      { '<leader>acb', '<cmd>ClaudeCodeAdd %<cr>', desc = '[a]i [c]laude: send current [b]uffer' },
+      { '<leader>acs', '<cmd>ClaudeCodeSend<cr>', mode = 'v', desc = '[a]i [c]laude: send selected content' },
+      {
+        '<leader>acs',
+        '<cmd>ClaudeCodeTreeAdd<cr>',
+        desc = '[a]i [claude]: add [f]ile',
+        ft = { 'NvimTree', 'neo-tree', 'oil', 'minifiles' },
+      },
+      -- Diff management
+      { '<leader>acy', '<cmd>ClaudeCodeDiffAccept<cr>', desc = 'Accept diff' },
+      { '<leader>acn', '<cmd>ClaudeCodeDiffDeny<cr>', desc = 'Deny diff' },
+    },
   },
 }

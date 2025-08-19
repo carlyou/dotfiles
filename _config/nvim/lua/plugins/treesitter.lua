@@ -47,10 +47,10 @@ return {
         swap = {
           enable = true,
           swap_next = {
-            ['<leader>s'] = '@parameter.inner',
+            ['<leader><leader>s'] = '@parameter.inner',
           },
           swap_previous = {
-            ['<leader><leader>s'] = '@parameter.inner',
+            ['<leader><leader>S'] = '@parameter.inner',
           },
         },
         move = {

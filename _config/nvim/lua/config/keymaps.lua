@@ -15,8 +15,9 @@ vim.keymap.set('c', '<BS>', function()
   end
 end, { expr = true, noremap = true })
 
-vim.keymap.set('v', 'Y', '"+y')
-vim.keymap.set('n', '<Space>', '<cmd>nohlsearch<cr>')
+vim.keymap.set('n', 'Y', 'V"+y', { noremap = true, silent = true })
+vim.keymap.set('v', 'Y', '"+y', { noremap = true, silent = true })
+vim.keymap.set('n', '<Space>', '<cmd>nohlsearch<cr>', { noremap = true, silent = true })
 vim.keymap.set('n', 'n', 'nzz', { noremap = true, silent = true })
 vim.keymap.set('n', 'N', 'Nzz', { noremap = true, silent = true })
 vim.keymap.set('n', '*', '*zz', { noremap = true, silent = true })
@@ -89,13 +90,23 @@ end, { noremap = true, silent = true, desc = '[Zoom] Reset Neovide scale factor'
 -- Terminal
 -- keymap to open a terminal in a split window, or just to the buffer if it already exists
 vim.keymap.set('n', '<leader>t', function()
-  if vim.fn.bufexists 'term://*' == 1 then
-    vim.cmd 'b term://*'
+  local term_bufs = vim.fn.filter(vim.fn.map(vim.fn.getbufinfo { buflisted = 1 }, 'v:val.bufnr'), 'getbufvar(v:val, "&buftype") is# "terminal"')
+  if #term_bufs > 0 then
+    for _, win in ipairs(vim.api.nvim_list_wins()) do
+      local buf = vim.api.nvim_win_get_buf(win)
+      if vim.tbl_contains(term_bufs, buf) then
+        vim.api.nvim_set_current_win(win)
+        return
+      end
+    end
+    vim.cmd 'vsplit'
+    vim.cmd('b ' .. term_bufs[1])
   else
-    vim.cmd 'vs'
+    vim.cmd 'vsplit'
     vim.cmd 'terminal'
   end
 end, { noremap = true, silent = true, desc = '[T]erminal' })
+
 vim.keymap.set('n', '<leader><leader>t', '<cmd>vs<cr><cmd>terminal<cr>', { noremap = true, silent = true, desc = 'Open [t]erminal in split on right' })
 
 -- Diagnostic
@@ -107,12 +118,36 @@ vim.keymap.set('n', '<leader><leader>q', vim.diagnostic.setloclist, { desc = 'Op
 --
 -- NOTE: This won't work in all terminal emulators/tmux/etc. Try your own mapping
 -- or just use <C-\><C-n> to exit terminal mode
-vim.keymap.set('t', '<C-z>', '<C-\\><C-n><C-w><C-w>', { noremap = true, silent = true })
+vim.keymap.set('t', '<C-z>', '<C-\\><C-n>', { noremap = true, silent = true })
+vim.keymap.set('t', '<C-w>=', '<C-\\><C-n><C-w>=', { noremap = true, silent = true })
+vim.keymap.set('t', '<C-w>|', '<C-\\><C-n>100<C-w>|', { noremap = true, silent = true })
+vim.keymap.set('t', '<C-w>h', '<C-\\><C-n><C-w>h', { noremap = true, silent = true })
+vim.keymap.set('t', '<C-w><C-h>', '<C-\\><C-n><C-w>h', { noremap = true, silent = true })
+vim.keymap.set('t', '<C-w>H', '<C-\\><C-n><C-w>H', { noremap = true, silent = true })
+vim.keymap.set('t', '<C-w><C-l>', '<C-\\><C-n><C-w>l', { noremap = true, silent = true })
+vim.keymap.set('t', '<C-w>L', '<C-\\><C-n><C-w>L', { noremap = true, silent = true })
 vim.keymap.set('t', '<C-w><C-w>', '<C-\\><C-n><C-w><C-w>', { noremap = true, silent = true })
+vim.keymap.set('t', '<C-w><C-b>', '<C-b>', { noremap = true, silent = true })
+vim.keymap.set('n', '<C-w><C-t>', function()
+  -- switch to terminal buffer and enter edit mode
+  for _, win in ipairs(vim.api.nvim_list_wins()) do
+    local buf = vim.api.nvim_win_get_buf(win)
+    local name = vim.api.nvim_buf_get_name(buf)
+    if name:match '^term://' then
+      vim.api.nvim_set_current_win(win)
+      vim.cmd 'startinsert'
+      return
+    end
+  end
+end, { noremap = true, silent = true })
 vim.keymap.set('t', '<C-p>', '<Up>', { noremap = true, silent = true })
 vim.keymap.set('t', '<C-n>', '<Down>', { noremap = true, silent = true })
 vim.keymap.set('t', '<C-f>', '<Right>', { noremap = true, silent = true })
 vim.keymap.set('t', '<C-b>', '<Left>', { noremap = true, silent = true })
+vim.keymap.set('t', '<D-v>', function()
+  local content = vim.fn.getreg '+'
+  vim.api.nvim_paste(content, true, -1)
+end, { noremap = true, silent = true })
 
 -- Keybinds to make split navigation easier.
 --  Use CTRL+<hjkl> to switch between windows

@@ -17,18 +17,18 @@ return {
     opts = {
       notify_on_error = true,
       format_on_save = function(bufnr)
-        local disable_filetypes = {
+        local enabled_filetypes = {
           --c = true,
           --cpp = true,
-          scala = true,
+          lua = true,
         }
-        if disable_filetypes[vim.bo[bufnr].filetype] then
-          return nil
-        else
+        if enabled_filetypes[vim.bo[bufnr].filetype] then
           return {
             timeout_ms = 500,
             lsp_format = 'fallback',
           }
+        else
+          return nil
         end
       end,
       formatters_by_ft = {

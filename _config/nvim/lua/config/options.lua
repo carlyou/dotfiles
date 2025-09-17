@@ -1,3 +1,7 @@
+vim.g.mapleader = '\\'
+vim.g.maplocalleader = '\\'
+vim.g.have_nerd_font = true -- https://github.com/ryanoasis/nerd-fonts
+
 -- UI/GUI settings
 vim.opt.guifont = 'Monaco:h12'
 vim.opt.winblend = 50

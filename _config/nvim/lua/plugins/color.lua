@@ -27,6 +27,7 @@ return {
     },
   },
 
+  { 'norcalli/nvim-colorizer.lua', opts = {} },
   -- color schemas
   { 'rebelot/kanagawa.nvim', opts = {}, enabled = false },
 

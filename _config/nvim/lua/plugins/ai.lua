@@ -1,4 +1,38 @@
 return {
+  -- Claude Code
+  {
+    'coder/claudecode.nvim',
+    dependencies = { 'folke/snacks.nvim' },
+    opts = {
+      log_level = 'info',
+      auto_start = true,
+      track_selection = true,
+      terminal = {
+        provider = 'snacks',
+      },
+      diff_opts = {
+        keep_terminal_open = true,
+      },
+    },
+    config = true,
+    keys = {
+      { '<leader>acc', '<cmd>ClaudeCode<cr>', desc = '[a]i [c]laude: Open/Toggle claude [c]ode' },
+      { '<leader>acf', '<cmd>ClaudeCodeFocus<cr>', desc = '[a]i [c]laude: [f]ocus' },
+      { '<leader>acb', '<cmd>ClaudeCodeAdd %<cr>', desc = '[a]i [c]laude: send current [b]uffer' },
+      { '<leader>acs', '<cmd>ClaudeCodeSend<cr>', mode = 'v', desc = '[a]i [c]laude: send selected content' },
+      {
+        '<leader>acs',
+        '<cmd>ClaudeCodeTreeAdd<cr>',
+        desc = '[a]i [claude]: add [f]ile',
+        ft = { 'NvimTree', 'neo-tree', 'oil', 'minifiles' },
+      },
+      -- Diff management
+      { '<leader>acy', '<cmd>ClaudeCodeDiffAccept<cr>', desc = 'Accept diff' },
+      { '<leader>acn', '<cmd>ClaudeCodeDiffDeny<cr>', desc = 'Deny diff' },
+    },
+  },
+
+  -- GitHub Copilot
   {
     'github/copilot.vim',
     init = function()
@@ -10,6 +44,7 @@ return {
     enabled = true,
   },
 
+  -- GitHub Copilot Chat
   {
     'CopilotC-Nvim/CopilotChat.nvim',
     dependencies = {
@@ -58,36 +93,5 @@ return {
     },
     lazy = false,
     enabled = true,
-  },
-
-  {
-    'coder/claudecode.nvim',
-    dependencies = { 'folke/snacks.nvim' },
-    opts = {
-      log_level = 'trace',
-      auto_start = false,
-      terminal = {
-        provider = 'snacks',
-      },
-      diff_opts = {
-        keep_terminal_open = true,
-      },
-    },
-    config = true,
-    keys = {
-      { '<leader>acc', '<cmd>ClaudeCode<cr>', desc = '[a]i [c]laude: Open/Toggle claude [c]ode' },
-      { '<leader>acf', '<cmd>ClaudeCodeFocus<cr>', desc = '[a]i [c]laude: [f]ocus' },
-      { '<leader>acb', '<cmd>ClaudeCodeAdd %<cr>', desc = '[a]i [c]laude: send current [b]uffer' },
-      { '<leader>acs', '<cmd>ClaudeCodeSend<cr>', mode = 'v', desc = '[a]i [c]laude: send selected content' },
-      {
-        '<leader>acs',
-        '<cmd>ClaudeCodeTreeAdd<cr>',
-        desc = '[a]i [claude]: add [f]ile',
-        ft = { 'NvimTree', 'neo-tree', 'oil', 'minifiles' },
-      },
-      -- Diff management
-      { '<leader>acy', '<cmd>ClaudeCodeDiffAccept<cr>', desc = 'Accept diff' },
-      { '<leader>acn', '<cmd>ClaudeCodeDiffDeny<cr>', desc = 'Deny diff' },
-    },
   },
 }

@@ -1,6 +1,11 @@
 return {
   {
     'preservim/nerdtree',
+    config = function()
+      vim.g.NERDTreeShowHidden = 1
+      --vim.g.NERDTreeMinimalUI = 1
+      vim.g.NERDTreeIgnore = { '.git$', '__pycache__$', '.DS_Store$' }
+    end,
     keys = {
       { '<leader>/', '<cmd>NERDTree .<CR>' },
     },
@@ -55,5 +60,24 @@ return {
         },
       },
     },
+  },
+
+  -- Session management
+  -- NOTE: in snacks dashboard, set session action as:
+  -- { "persistence.nvim", ":lua require('persistence').select()" },
+  {
+    'folke/persistence.nvim',
+    event = 'BufReadPre', -- this will only start session saving when an actual file was opened
+    opts = {
+      -- add any custom options here
+    },
+  },
+
+  {
+    'yuratomo/w3m.vim',
+    keys = {
+      { '<leader>w', '<cmd>W3mVSplit<CR>', desc = 'Open URL with w3m' },
+    },
+    enabled = false,
   },
 }

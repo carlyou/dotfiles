@@ -21,7 +21,7 @@ set -o vi
 
 alias cdm='cd "${$(pwd)/test/main}"'
 alias cdt='cd "${$(pwd)/main/test}"'
-alias cdp="cd ~/project"
+alias cdp="cd ~/projects"
 alias ta='tmux a'
 
 alias cdg='cd `git rev-parse --show-toplevel`'
@@ -71,6 +71,12 @@ python_env() {
 
   echo "%{$fg_bold[blue]%}python:[%{$fg[cyan]%}${_py_env}:${_py_version}%{$fg_bold[blue]%}]%{$reset_color%}"
 }
+
+# ===========================
+# NVM
+# ===========================
+export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
 
 # ===========================
 # Docker

@@ -11,6 +11,33 @@ config.font_size = 12
 --config.freetype_render_target = "VerticalLcd"
 
 config.enable_tab_bar = false
+
+config.enable_tab_bar = true
+config.hide_tab_bar_if_only_one_tab = true
+
+wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_width)
+	local background = "#222436"
+	local foreground = "#c8d3f5"
+
+	if tab.is_active then
+		background = "#82aaff"
+		foreground = "#1e2030"
+	elseif hover then
+		background = "#2d3f76"
+		foreground = "#c8d3f5"
+	else
+		background = "#1e2030"
+		foreground = "#828bb8"
+	end
+
+	text = tab.active_pane.title
+	return {
+		{ Background = { Color = background } },
+		{ Foreground = { Color = foreground } },
+		{ Text = " " .. text .. " " },
+	}
+end)
+
 config.initial_rows = 40
 config.initial_cols = 160
 

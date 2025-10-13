@@ -22,61 +22,40 @@ set -o vi
 alias cdm='cd "${$(pwd)/test/main}"'
 alias cdt='cd "${$(pwd)/main/test}"'
 alias cdp="cd ~/projects"
+alias cdg='cd `git rev-parse --show-toplevel`'
+
 alias ta='tmux a'
 
-alias cdg='cd `git rev-parse --show-toplevel`'
 alias gc='git checkout'
+alias gd='git diff'
 alias gdc='git diff --cached'
-alias gm='git checkout master'
 alias gp='git pull'
 alias gs='git status'
 
-alias p3='python3'
+unalias gm
+gm() {
+# Checkout main branch (tries main, falls back to master)
+  git checkout main 2>/dev/null || \
+    git checkout master 2>/dev/null || \
+    echo "Neither 'main' nor 'master' branch found"
+}
 
-# if default venv exsits
-if [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/venvs/default/bin/activate ]; then
-  source ${XDG_DATA_HOME:-$HOME/.local/share}/venvs/default/bin/activate
-  alias cduv='cd ${XDG_DATA_HOME:-$HOME/.config/python}/default-env'
+if command -v thefuck >/dev/null 2>&1; then
+  eval "$(thefuck --alias kk)"
 fi
-
 
 # ===========================
 # Python
 # ===========================
-PY_ENV_TOOL="uv" # "conda" or "uv"
+alias cduv='cd ${XDG_DATA_HOME:-$HOME/.config/python}/default-env'
+alias p3='python3'
+alias py='python'
+alias jl='jupyter lab'
 
-if [[ "$PY_ENV_TOOL" == "conda" ]]; then
-  # >>> conda initialize >>>
-  # !! Contents within this block are managed by 'conda init' !!
-  #
-  __conda_setup="$('~/anaconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
-  if [ $? -eq 0 ]; then
-      eval "$__conda_setup"
-  else
-      if [ -f "~/anaconda3/etc/profile.d/conda.sh" ]; then
-          . "~/anaconda3/etc/profile.d/conda.sh"
-      else
-          export PATH="$PATH:~/anaconda3/bin"
-      fi
-  fi
-  unset __conda_setup
-  #
-  # <<< conda initialize <<<
+# if default venv exists
+if [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/venvs/default/bin/activate ]; then
+  source ${XDG_DATA_HOME:-$HOME/.local/share}/venvs/default/bin/activate
 fi
-
-if [[ "$PY_ENV_TOOL" == "uv" ]]; then
-  . "$HOME/.local/bin/env"
-fi
-
-python_env() {
-  _py_version=$(python --version | awk -F'[ \.]' '{print $2"."$3}')
-
-  _py_env="default"
-  [[ "$CONDA_DEFAULT_ENV" != "" ]] && _py_env="conda:${CONDA_DEFAULT_ENV}"
-  [[ "$VIRTUAL_ENV" != "" ]] && _py_env="uv:${VIRTUAL_ENV_PROMPT}"
-
-  echo "%{$fg_bold[blue]%}python:[%{$fg[cyan]%}${_py_env}:${_py_version}%{$fg_bold[blue]%}]%{$reset_color%}"
-}
 
 # ===========================
 # NVM
@@ -85,159 +64,89 @@ export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || pr
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
 
 # ===========================
-# Docker
-# ===========================
-function drun() {
-  # assert current directory is not home directory
-  if [ "$(pwd)" = "$HOME" ]; then
-    echo "Error: Cannot run docker from home directory."
-    return 1
-  fi
-
-  #cp ~/.dockerrc .dockerrc
-  #
-  if [ -z "$1" ]; then
-    echo "Usage: drun <image_name>"
-    return 1
-  fi
-
-  image_name="$1"
-  shift
-
-  if [ -z "$1" ]; then
-    docker run --rm -it -v "$(pwd):/workspace" -w "/workspace" "$image_name" /bin/bash
-  else
-    docker run --rm -it "$image_name" "$@"
-  fi
-}
-
-# ===========================
 # PROMPT
 # ===========================
-ZSH_THEME_GIT_PROMPT_PREFIX="%{$fg_bold[blue]%}git:(%{$fg[red]%}"
-ZSH_THEME_GIT_PROMPT_SUFFIX="%{$reset_color%} "
-ZSH_THEME_GIT_PROMPT_DIRTY="%{$fg[blue]%}) %{$fg[yellow]%}%1{✗%}"
-ZSH_THEME_GIT_PROMPT_CLEAN="%{$fg[blue]%})"
-
-# faster git
-git_prompt() {
-  if [ "$(git rev-parse --is-inside-work-tree 2> /dev/null)" = "true" ]; then
-    _git_branch="$(git rev-parse --abbrev-ref HEAD 2>/dev/null)"
-
-    echo "${ZSH_THEME_GIT_PROMPT_PREFIX}${_git_branch}${ZSH_THEME_GIT_PROMPT_CLEAN}${ZSH_THEME_GIT_PROMPT_SUFFIX}"
-    return 
-
-    if [[ $(git diff --shortstat 2> /dev/null | tail -n1) != "" ]]; then
-      _git_status=$ZSH_THEME_GIT_PROMPT_DIRTY
-    else
-      _git_status=$ZSH_THEME_GIT_PROMPT_CLEAN
-    fi
-
-    echo "${ZSH_THEME_GIT_PROMPT_PREFIX}${_git_branch}${_git_status}${ZSH_THEME_GIT_PROMPT_SUFFIX}"
-  fi
-}
-
-set_prompt () {
-  P_ARROW="%(?:%{$fg_bold[green]%}%1{➜%}:%{$fg_bold[red]%}%1{➜%})"
-  P_PATH="%{$fg[cyan]%}%~%{$reset_color%}"
-  P_DIR="%{$fg[cyan]%}%1~%{$reset_color%}"
-  P_PYTHON="$(python_env)"
-  P_GIT="$(git_prompt)"
-  P_TIME="%{$fg[cyan]%}[%D{%y/%m/%f}%@]%{$reset_color%}"
-
-  PROMPT="${P_PATH} ${P_PYTHON} ${P_GIT}"
-  PROMPT="${PROMPT}"$'\n'"${P_ARROW} "
-  RPROMPT="${P_TIME}"
-}
-
-PS_THEME="p10k" # "p10k" or "local"
-
-if [[ "$PS_THEME" == "local" ]]; then
-  precmd_functions+=set_prompt
-  set_prompt
-fi
-
-if [[ "$PS_THEME" == "p10k" ]]; then
+if brew list powerlevel10k &> /dev/null; then
   source /opt/homebrew/share/powerlevel10k/powerlevel10k.zsh-theme
   # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
   [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
   [[ ! -f ~/.config/p10k/p10k.zsh ]] || source ~/.config/p10k/p10k.zsh
+else
+  echo -e "\033[34m powerlevel10k not installed, using default prompt.\033[0m"
 fi
 
 # ===========================
 # neovim
 # ===========================
-nvim_listen() {
-  _force=0
-  if [[ "$1" == "-f" ]]; then
-    _force=1
-    shift 1
-  fi
-  _nvim_sock=${1:-/tmp/nvim.sock}
-  if [ -S $_nvim_sock ]; then
-    if [[ "$_force" == "1" ]]; then
-      rm $_nvim_sock
-    else
-      echo "$_nvim_sock already exists. use '-f' to force start."
-      return 1
-    fi
-  fi
+NVIM_SOCK="${NVIM_SOCK:-/tmp/nvim.sock}"
+NVIM_TMUX_SESSION="nvim"
 
-  while [ ! -S $_nvim_sock ]; do
-    echo "Listening for Neovim socket on [${_nvim_sock}] ..."
-    nvim --headless --listen ${_nvim_sock}
-    if [ -S $_nvim_sock ]; then
-      rm $_nvim_sock
-    fi
-    echo "Connection interrupted, restarting listener..."
-  done
+# Check if socket is valid (actually has a process listening)
+_nvim_socket_valid() {
+  [ -S "$NVIM_SOCK" ] && lsof "$NVIM_SOCK" &>/dev/null
 }
 
-nvim_connect() {
-  _nvim_sock=${1:-/tmp/nvim.sock}
-  if [ -S $_nvim_sock ]; then
-    echo "Connecting to Neovim socket ${_nvim_sock} ..."
-    neovide --fork --server $_nvim_sock
+# Start neovim headless server in tmux session
+nvim_start() {
+  # Check if valid server is already running
+  if _nvim_socket_valid; then
+    echo "Neovim server is already running at $NVIM_SOCK"
+    return 0
+  fi
+
+  # Clean up stale socket if exists
+  if [ -S "$NVIM_SOCK" ]; then
+    echo "Removing stale socket..."
+    rm -f "$NVIM_SOCK"
+  fi
+
+  # Kill stale tmux session if exists
+  if tmux has-session -t "$NVIM_TMUX_SESSION" 2>/dev/null; then
+    echo "Killing stale tmux session..."
+    tmux kill-session -t "$NVIM_TMUX_SESSION"
+  fi
+
+  # Start fresh
+  echo "Creating tmux session '$NVIM_TMUX_SESSION' with neovim server..."
+  tmux new-session -d -s "$NVIM_TMUX_SESSION" "nvim --headless --listen $NVIM_SOCK"
+  sleep 0.5
+
+  if _nvim_socket_valid; then
+    echo "Neovim server started at $NVIM_SOCK"
   else
-    echo "No Neovim socket found at ${_nvim_sock}."
-  fi
-}
-
-nvim_clean() {
-  _nvim_sock=${1:-/tmp/nvim.sock}
-  if pgrep -f "nvim --headless --listen ${_nvim_sock}"; then
-    echo "Neovim is running. Please close it before cleaning the socket."
+    echo "Failed to start neovim server"
     return 1
   fi
-  if [ -S $_nvim_sock ]; then
-    echo "Removing Neovim socket ${_nvim_sock} ..."
-    rm -f $_nvim_sock
+}
+
+# Stop neovim server
+nvim_stop() {
+  if tmux has-session -t "$NVIM_TMUX_SESSION" 2>/dev/null; then
+    echo "Killing tmux session '$NVIM_TMUX_SESSION'..."
+    tmux kill-session -t "$NVIM_TMUX_SESSION"
   else
-    echo "No Neovim socket found at ${_nvim_sock}."
+    echo "No tmux session '$NVIM_TMUX_SESSION' found"
+  fi
+
+  if [ -S "$NVIM_SOCK" ]; then
+    echo "Removing socket $NVIM_SOCK..."
+    rm -f "$NVIM_SOCK"
   fi
 }
 
-nvim_launch() {
-  _nvim_sock=${1:-/tmp/nvim.sock}
-
-  if [ -S $_nvim_sock ]; then
-    echo "Socket ${_nvim_sock} already exists, trying to clean it up..."
-    if ! nvim_clean $_nvim_sock; then
-      echo "Failed to clean up existing socket. Please stop the listener first, or use 'nvim_connect' instead."
-      return 1
-    else
-      echo "Socket cleaned up successfully."
-    fi
+# Connect to neovim server with neovide
+nvim_connect() {
+  # Check if valid server exists, if not start one
+  if ! _nvim_socket_valid; then
+    echo "No valid Neovim server found, starting one..."
+    nvim_start || return 1
   fi
 
-  # cannot call tmux_listen because tmux does not inherit shell functions 
-  tmux new-session -d -s "[ephemeral] nvim listen" "nvim --headless --listen $_nvim_sock"
-  sleep 1
-  nvim_connect $_nvim_sock
+  echo "Connecting to Neovim server..."
+  neovide --fork --server "$NVIM_SOCK"
 }
 
 alias vim='neovide --fork'
-alias vl=nvim_launch
 
 # ===========================
 # fzf
@@ -272,8 +181,3 @@ source <(fzf --zsh)
 # Extra local configurations
 # ===========================
 [ -f ~/.zshrc_local ] && source ~/.zshrc_local
-
-# Added by LM Studio CLI (lms)
-export PATH="$PATH:/Users/carlyou/.lmstudio/bin"
-# End of LM Studio CLI section
-

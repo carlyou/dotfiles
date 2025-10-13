@@ -6,15 +6,21 @@ vim.g.have_nerd_font = true -- https://github.com/ryanoasis/nerd-fonts
 vim.opt.guifont = 'Monaco:h12'
 vim.opt.winblend = 50
 
-vim.g.neovide_input_macos_option_key_is_meta = 'only_left'
+if vim.g.neovide then
+  -- Put anything you want to happen only in Neovide here
+  vim.g.neovide_input_macos_option_key_is_meta = 'only_left'
 
-vim.g.neovide_opacity = 0.90
-vim.g.neovide_normal_opacity = 0.90
-vim.g.neovide_show_border = true
-vim.g.neovide_window_blurred = true
-vim.g.neovide_floating_blur_amount_x = 2.0
-vim.g.neovide_floating_blur_amount_y = 2.0
---vim.g.neovide_hide_mouse_when_typing = true
+  vim.g.neovide_opacity = 0.90
+  vim.g.neovide_normal_opacity = 0.90
+  vim.g.neovide_show_border = true
+  vim.g.neovide_window_blurred = true
+  vim.g.neovide_floating_blur_amount_x = 2.0
+  vim.g.neovide_floating_blur_amount_y = 2.0
+
+  vim.g.neovide_remember_window_size = true
+  vim.g.neovide_remember_window_position = true
+  --vim.g.neovide_hide_mouse_when_typing = true
+end
 
 -- Tab settings
 vim.opt.expandtab = true

@@ -76,6 +76,17 @@ vim.keymap.set('n', '<D-9>', '9gt', { noremap = true, silent = true })
 vim.keymap.set('n', '<D-[>', '<cmd>tabprevious<cr>', { noremap = true, silent = true })
 vim.keymap.set('n', '<D-]>', '<cmd>tabnext<cr>', { noremap = true, silent = true })
 
+-- Create new neovide window as standalone process
+vim.keymap.set({ 'n', 't' }, '<D-n>', function()
+  vim.fn.jobstart('neovide', { detach = true })
+end, { noremap = true, silent = true, desc = 'Create new Neovide window' })
+
+-- Alternative: use leader key combo if cmd-` doesn't work in neovide
+vim.keymap.set('n', '<C-`>', function()
+  local script_path = vim.fn.expand '~/.config/neovide/cycle-windows.sh'
+  vim.fn.jobstart({ 'bash', script_path }, { detach = true })
+end, { noremap = true, silent = true, desc = 'Cycle through Neovide windows' })
+
 -- 3. Zoom in/out
 vim.keymap.set('n', '<D-=>', function()
   vim.g.neovide_scale_factor = vim.g.neovide_scale_factor + 0.1

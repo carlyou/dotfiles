@@ -35,7 +35,14 @@ return {
     opts = {
       processor = 'magick_cli',
       backend = 'ueberzug', -- Better compatibility with wezterm
-      integrations = {}, -- do whatever you want with image.nvim's integrations
+      integrations = {
+        markdown = {
+          enabled = true,
+          clear_in_insert_mode = false,
+          download_remote_images = true,
+          only_render_image_at_cursor = false,
+        },
+      },
       max_width = 100, -- tweak to preference
       max_height = 12, -- ^
       max_height_window_percentage = math.huge, -- this is necessary for a good experience
@@ -78,14 +85,6 @@ return {
           completion = {
             enabled = true,
           },
-        },
-        keymap = {
-          -- NOTE: setup your own keymaps:
-          hover = 'H',
-          definition = 'gd',
-          rename = '<leader>rn',
-          references = 'gr',
-          format = '<leader>gf',
         },
         codeRunner = {
           enabled = true,

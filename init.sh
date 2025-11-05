@@ -93,3 +93,12 @@ if [ ! -e ~/.local/share/nvim/venv ]; then
 else
   echo -e "\033[33mℹ️ ~/.local/share/nvim/venv/nvim already exists\033[0m"
 fi
+
+[ ! -d ~/.local/share/venvs ] && mkdir -p ~/.local/share/venvs
+if [ ! -e ~/.local/share/venvs/default ]; then
+  uv sync --project "$(pwd)/_venvs/default" > /dev/null 2>&1
+  ln -s "$(pwd)/_venvs/default/.venv" ~/.local/share/venvs/default
+  echo -e "\033[32m✅ ~/.local/share/venvs/default symlink created\033[0m"
+else
+  echo -e "\033[33mℹ️ ~/.local/share/venvs/default already exists\033[0m"
+fi

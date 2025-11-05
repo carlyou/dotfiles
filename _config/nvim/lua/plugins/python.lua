@@ -63,6 +63,7 @@ return {
       output_extension = 'md',
       force_ft = 'markdown',
     },
+    enabled = false,
   },
 
   {

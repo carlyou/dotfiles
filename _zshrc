@@ -19,9 +19,11 @@ source $ZSH/oh-my-zsh.sh
 # ===========================
 set -o vi
 
+PROJECTS_DIR=~/projects
+alias cdd="cd ${PROJECTS_DIR}/dotfiles"
 alias cdm='cd "${$(pwd)/test/main}"'
 alias cdt='cd "${$(pwd)/main/test}"'
-alias cdp="cd ~/projects"
+alias cdp="cd ${PROJECTS_DIR}"
 alias cdg='cd `git rev-parse --show-toplevel`'
 
 alias ta='tmux a'
@@ -47,13 +49,12 @@ fi
 # ===========================
 # Python
 # ===========================
-alias cduv='cd ${XDG_DATA_HOME:-$HOME/.config/python}/default-env'
 alias p3='python3'
-alias py='python'
 alias jl='jupyter lab'
 
 # if default venv exists
 if [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/venvs/default/bin/activate ]; then
+  alias cdu="cd ${PROJECTS_DIR}/dotfiles/_venvs/default"
   source ${XDG_DATA_HOME:-$HOME/.local/share}/venvs/default/bin/activate
 fi
 
@@ -78,74 +79,26 @@ fi
 # ===========================
 # neovim
 # ===========================
-NVIM_SOCK="${NVIM_SOCK:-/tmp/nvim.sock}"
-NVIM_TMUX_SESSION="nvim"
-
-# Check if socket is valid (actually has a process listening)
-_nvim_socket_valid() {
-  [ -S "$NVIM_SOCK" ] && lsof "$NVIM_SOCK" &>/dev/null
+nvim_listen() {
+  NVIM_PORT="${1:-6666}"
+  echo "Neovim listening on port $NVIM_PORT"
+  tmux new-session  s "[nvim]" -d nvim --headless --listen "0.0.0.0:$NVIM_PORT"
 }
 
-# Start neovim headless server in tmux session
-nvim_start() {
-  # Check if valid server is already running
-  if _nvim_socket_valid; then
-    echo "Neovim server is already running at $NVIM_SOCK"
-    return 0
-  fi
-
-  # Clean up stale socket if exists
-  if [ -S "$NVIM_SOCK" ]; then
-    echo "Removing stale socket..."
-    rm -f "$NVIM_SOCK"
-  fi
-
-  # Kill stale tmux session if exists
-  if tmux has-session -t "$NVIM_TMUX_SESSION" 2>/dev/null; then
-    echo "Killing stale tmux session..."
-    tmux kill-session -t "$NVIM_TMUX_SESSION"
-  fi
-
-  # Start fresh
-  echo "Creating tmux session '$NVIM_TMUX_SESSION' with neovim server..."
-  tmux new-session -d -s "$NVIM_TMUX_SESSION" "nvim --headless --listen $NVIM_SOCK"
-  sleep 0.5
-
-  if _nvim_socket_valid; then
-    echo "Neovim server started at $NVIM_SOCK"
-  else
-    echo "Failed to start neovim server"
-    return 1
-  fi
-}
-
-# Stop neovim server
-nvim_stop() {
-  if tmux has-session -t "$NVIM_TMUX_SESSION" 2>/dev/null; then
-    echo "Killing tmux session '$NVIM_TMUX_SESSION'..."
-    tmux kill-session -t "$NVIM_TMUX_SESSION"
-  else
-    echo "No tmux session '$NVIM_TMUX_SESSION' found"
-  fi
-
-  if [ -S "$NVIM_SOCK" ]; then
-    echo "Removing socket $NVIM_SOCK..."
-    rm -f "$NVIM_SOCK"
-  fi
-}
 
 # Connect to neovim server with neovide
 nvim_connect() {
-  # Check if valid server exists, if not start one
-  if ! _nvim_socket_valid; then
-    echo "No valid Neovim server found, starting one..."
-    nvim_start || return 1
+  NVIM_HOST=$1
+  echo "Neovim connecting to host $NVIM_HOST"
+  if [ -z "$NVIM_HOST" ]; then
+    echo "Usage: nvim_connect <host>"
+    return 1
   fi
 
-  echo "Connecting to Neovim server..."
-  neovide --fork --server "$NVIM_SOCK"
+  neovide --fork --server "$NVIM_HOST"
 }
 
+# Use nvim in SSH sessions, neovide otherwise
 alias vim='neovide --fork'
 
 # ===========================
@@ -164,14 +117,13 @@ cpf() {
 
 pdf() {
   _file=$(fzf)
-  # strip whitespace and newlines
-  [ -n "$_file" ] && eval "zathura $_file &"
+  [ -n "$_file" ] && nohup zathura "$_file" &>/dev/null &
 }
 
 nf() {
   _file=$(fzf)
   # strip whitespace and newlines
-  [ -n "$_file" ] && eval "vim $_file &"
+  [ -n "$_file" ] && eval "vim $_file"
 }
 
 # Set up fzf key bindings and fuzzy completion

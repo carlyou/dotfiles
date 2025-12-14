@@ -18,7 +18,7 @@ fi
 
 # Homebrew packages
 packages="
-  wezterm@nightly
+  wezterm
   node
   thefuck
   powerlevel10k

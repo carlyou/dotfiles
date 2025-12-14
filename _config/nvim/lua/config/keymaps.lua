@@ -81,8 +81,9 @@ vim.keymap.set({ 'n', 't' }, '<D-n>', function()
   vim.fn.jobstart('neovide', { detach = true })
 end, { noremap = true, silent = true, desc = 'Create new Neovide window' })
 
--- Alternative: use leader key combo if cmd-` doesn't work in neovide
-vim.keymap.set('n', '<C-`>', function()
+-- Cycle through Neovide windows (matches macOS Cmd+` behavior)
+--vim.keymap.set('n', '<D-`>', function()
+vim.keymap.set('n', '<leader>`', function()
   local script_path = vim.fn.expand '~/.config/neovide/cycle-windows.sh'
   vim.fn.jobstart({ 'bash', script_path }, { detach = true })
 end, { noremap = true, silent = true, desc = 'Cycle through Neovide windows' })

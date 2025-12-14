@@ -36,7 +36,7 @@ vim.opt.autoindent = true
 vim.cmd [[filetype plugin indent on]]
 vim.cmd [[syntax on]]
 
-vim.opt.wrap = false
+vim.opt.wrap = true
 vim.opt.number = true
 vim.opt.relativenumber = true
 

@@ -1,5 +1,17 @@
 #!/bin/sh
 
+# macOS dotfiles installation script
+# For Ubuntu/Linux, use init-ubuntu.sh instead
+
+# OS check
+if [ "$(uname)" != "Darwin" ]; then
+  echo -e "\033[31m❌ Error: This script is for macOS only.\033[0m"
+  echo -e "\033[33m💡 For Ubuntu/Linux, use: ./init-ubuntu.sh\033[0m"
+  exit 1
+fi
+
+echo -e "\033[34m🍎 Starting macOS dotfiles installation...\033[0m"
+
 # zsh
 if ! command -v zsh &> /dev/null; then
   echo -e "\033[34m⬇️ Installing zsh...\033[0m"

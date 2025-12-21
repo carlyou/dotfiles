@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Ubuntu/Debian init script for dotfiles (headless/SSH setup)
-# Skips GUI applications (wezterm, neovide, zathura, alfred)
+# Ubuntu/Debian init script for dotfiles
+# Includes GUI applications (wezterm, neovide)
 # For macOS, use init-macos.sh instead
 
 set -e  # Exit on error
@@ -42,6 +42,40 @@ for pkg in "${packages[@]}"; do
     sudo apt install -y "$pkg"
   fi
 done
+
+# Install WezTerm (GUI terminal)
+if command -v wezterm &> /dev/null; then
+  echo -e "\033[32m✅ WezTerm is already installed\033[0m"
+else
+  echo -e "\033[34m⬇️ Installing WezTerm...\033[0m"
+  curl -fsSL https://apt.fury.io/wez/gpg.key | sudo gpg --yes --dearmor -o /usr/share/keyrings/wezterm-fury.gpg
+  echo 'deb [signed-by=/usr/share/keyrings/wezterm-fury.gpg] https://apt.fury.io/wez/ * *' | sudo tee /etc/apt/sources.list.d/wezterm.list
+  sudo apt update
+  sudo apt install -y wezterm
+fi
+
+# Install Rust (required for neovide)
+if command -v cargo &> /dev/null; then
+  echo -e "\033[32m✅ Rust/Cargo is already installed\033[0m"
+else
+  echo -e "\033[34m⬇️ Installing Rust...\033[0m"
+  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+  source "$HOME/.cargo/env"
+fi
+
+# Install Neovide (GUI for Neovim)
+if command -v neovide &> /dev/null; then
+  echo -e "\033[32m✅ Neovide is already installed\033[0m"
+else
+  echo -e "\033[34m⬇️ Installing Neovide dependencies...\033[0m"
+  sudo apt install -y cmake pkg-config libfontconfig-dev libfreetype6-dev libxcb-xfixes0-dev libxkbcommon-dev python3
+
+  # Ensure cargo is in PATH
+  export PATH="$HOME/.cargo/bin:$PATH"
+
+  echo -e "\033[34m⬇️ Installing Neovide (this may take a few minutes)...\033[0m"
+  cargo install --git https://github.com/neovide/neovide
+fi
 
 # Install Oh My Zsh
 if [ ! -d "$HOME/.oh-my-zsh" ]; then
@@ -115,8 +149,8 @@ else
   echo -e "\033[33m⚠️  ~/.gitignore_global already exists (not a symlink, skipping)\033[0m"
 fi
 
-# config directories (skip GUI apps)
-folders="nvim p10k tmux"
+# config directories
+folders="neovide nvim p10k tmux wezterm"
 
 [ ! -d ~/.config ] && mkdir -p ~/.config
 for folder in $folders; do
@@ -182,9 +216,13 @@ echo "  2. Configure Powerlevel10k: p10k configure"
 echo "  3. Install tmux plugins: tmux, then Ctrl+b I"
 echo "  4. Open nvim to auto-install plugins"
 echo ""
+echo "Installed GUI apps:"
+echo "  • WezTerm - Modern GPU-accelerated terminal"
+echo "  • Neovide - GUI for Neovim"
+echo ""
 echo "Notes:"
-echo "  • GUI apps skipped (wezterm, neovide, zathura)"
 echo "  • Use tmux for clipboard via OSC 52 over SSH"
 echo "  • Node.js available via nvm"
 echo "  • Python default venv auto-activates in zsh"
+echo "  • Rust/Cargo installed for neovide"
 echo "\033[0m"

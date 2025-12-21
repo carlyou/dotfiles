@@ -36,7 +36,8 @@ return {
   {
     'github/copilot.vim',
     init = function()
-      vim.g.copilot_node_command = '/opt/homebrew/bin/node'
+      -- Use dynamic node path (works on macOS with Homebrew/NVM and Linux with NVM/apt)
+      vim.g.copilot_node_command = vim.fn.exepath('node')
       --vim.g.copilot_no_tab_map = true
       vim.cmd [[inoremap <silent><script><expr> <C-i> copilot#Accept("\t")]]
     end,

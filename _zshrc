@@ -26,8 +26,6 @@ alias cdt='cd "${$(pwd)/main/test}"'
 alias cdp="cd ${PROJECTS_DIR}"
 alias cdg='cd `git rev-parse --show-toplevel`'
 
-alias ta='tmux a'
-
 alias gc='git checkout'
 alias gd='git diff'
 alias gdc='git diff --cached'
@@ -45,6 +43,64 @@ gm() {
 if command -v thefuck >/dev/null 2>&1; then
   eval "$(thefuck --alias kk)"
 fi
+
+# ===========================
+# Tmux
+# ===========================
+ta() {
+  local servername="${1:-}"
+
+  # If no servername provided, try to find one
+  if [ -z "$servername" ]; then
+    # First try default
+    if tmux -L "default" has-session 2>/dev/null; then
+      servername="default"
+    else
+      # Try to find any existing server with active sessions
+      local socket_dir="/tmp/tmux-$(id -u)"
+      if [ -d "$socket_dir" ] && [ -n "$(ls -A "$socket_dir" 2>/dev/null)" ]; then
+        for socket in "$socket_dir"/*; do
+          if [ -S "$socket" ]; then
+            local server=$(basename "$socket")
+            if tmux -L "$server" has-session 2>/dev/null; then
+              servername="$server"
+              break
+            fi
+          fi
+        done
+      fi
+
+      # If still no server found, use default
+      if [ -z "$servername" ]; then
+        servername="default"
+      fi
+    fi
+  fi
+
+  if tmux -L "$servername" has-session 2>/dev/null; then
+    tmux -L "$servername" attach-session
+  else
+    tmux -L "$servername" new-session
+  fi
+}
+
+alias ta!='ta default'
+
+tl() {
+  local socket_dir="/tmp/tmux-$(id -u)"
+  if [ -d "$socket_dir" ] && [ -n "$(ls -A "$socket_dir" 2>/dev/null)" ]; then
+    echo "Active tmux servers:"
+    for socket in "$socket_dir"/*; do
+      if [ -S "$socket" ]; then
+        local servername=$(basename "$socket")
+        local session_count=$(tmux -L "$servername" list-sessions 2>/dev/null | wc -l)
+        echo "  $servername ($session_count sessions)"
+      fi
+    done
+  else
+    echo "No tmux servers found"
+  fi
+}
 
 # ===========================
 # Python
@@ -90,13 +146,42 @@ else
   fi
 fi
 
+
+# ===========================
+# jupyter
+# ===========================
+jupyter_server() {
+  JUPYTER_PORT="${1:-8888}"
+  SESSION_NAME="[jupyter]"
+  if TMUX= tmux has-session -t "$SESSION_NAME" 2>/dev/null; then
+    echo "Jupyter server already running in tmux session '$SESSION_NAME'."
+  else
+    TMUX= tmux new-session -s "$SESSION_NAME" -n "$JUPYTER_PORT" -d  jupyter lab --no-browser --ip=127.0.0.1 --port="$JUPYTER_PORT"
+    echo "Jupyter server started in tmux session $SESSION_NAME on port $JUPYTER_PORT"
+  fi
+}
+
 # ===========================
 # neovim
 # ===========================
 nvim_listen() {
-  NVIM_PORT="${1:-6666}"
+  NVIM_PORT="${1:-}"
+  SESSION_NAME="[nvim]"
+
+  # Auto-select unused port if not provided
+  if [ -z "$NVIM_PORT" ]; then
+    # Let OS assign an unused port
+    NVIM_PORT=$(python3 -c 'import socket; s=socket.socket(); s.bind(("", 0)); print(s.getsockname()[1]); s.close()')
+  fi
+
   echo "Neovim listening on port $NVIM_PORT"
-  tmux new-session  s "[nvim]" -d nvim --headless --listen "0.0.0.0:$NVIM_PORT"
+
+  # Create session if it doesn't exist, otherwise create new window
+  if TMUX= tmux has-session -t "$SESSION_NAME" 2>/dev/null; then
+    TMUX= tmux new-window -t "$SESSION_NAME" -n "$NVIM_PORT" nvim --headless --listen "0.0.0.0:$NVIM_PORT"
+  else
+    TMUX= tmux new-session -s "$SESSION_NAME" -n "$NVIM_PORT" -d nvim --headless --listen "0.0.0.0:$NVIM_PORT"
+  fi
 }
 
 
@@ -112,8 +197,13 @@ nvim_connect() {
   neovide --fork --server "$NVIM_HOST"
 }
 
+alias nv='neovide --fork'
 # Use nvim in SSH sessions, neovide otherwise
-alias vim='neovide --fork'
+if [ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ]; then
+  alias vim='nvim'
+else
+  alias vim='neovide --fork'
+fi
 
 # ===========================
 # fzf

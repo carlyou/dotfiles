@@ -17,7 +17,7 @@ echo -e "\033[34m🐧 Starting Ubuntu dotfiles installation...\033[0m"
 
 # Update package list
 echo -e "\033[34m⬇️ Updating apt package list...\033[0m"
-sudo apt update
+sudo apt update || true
 
 # Install essential packages
 packages=(
@@ -50,7 +50,6 @@ else
   echo -e "\033[34m⬇️ Installing WezTerm...\033[0m"
   curl -fsSL https://apt.fury.io/wez/gpg.key | sudo gpg --yes --dearmor -o /usr/share/keyrings/wezterm-fury.gpg
   echo 'deb [signed-by=/usr/share/keyrings/wezterm-fury.gpg] https://apt.fury.io/wez/ * *' | sudo tee /etc/apt/sources.list.d/wezterm.list
-  sudo apt update
   sudo apt install -y wezterm
 fi
 
@@ -148,6 +147,9 @@ if [ ! -e ~/.gitignore_global ] || [ -L ~/.gitignore_global ]; then
 else
   echo -e "\033[33m⚠️  ~/.gitignore_global already exists (not a symlink, skipping)\033[0m"
 fi
+
+git config --global core.excludesfile ~/.gitignore_global
+echo -e "\033[32m✅ git configured to use ~/.gitignore_global\033[0m"
 
 # config directories
 folders="neovide nvim p10k tmux wezterm"

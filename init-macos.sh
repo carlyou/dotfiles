@@ -84,6 +84,9 @@ else
   echo -e "\033[33mℹ️ ~/.gitignore_global already exists\033[0m"
 fi
 
+git config --global core.excludesfile ~/.gitignore_global
+echo -e "\033[32m✅ git configured to use ~/.gitignore_global\033[0m"
+
 # file: ~/.config/...
 folders="neovide nvim p10k tmux wezterm zathura"
 

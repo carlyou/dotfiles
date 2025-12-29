@@ -3,7 +3,11 @@ vim.g.maplocalleader = '\\'
 vim.g.have_nerd_font = true -- https://github.com/ryanoasis/nerd-fonts
 
 -- UI/GUI settings
-vim.opt.guifont = 'Monaco:h12'
+if vim.loop.os_uname().sysname == 'Linux' then
+  vim.opt.guifont = 'Monaco Nerd Font Mono:h10'
+else
+  vim.opt.guifont = 'Monaco Nerd Font Mono:h12'
+end
 vim.opt.winblend = 50
 
 if vim.g.neovide then

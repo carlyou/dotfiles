@@ -1,8 +1,9 @@
 return {
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
+    tag = 'v0.9.3', -- Use last stable version before v1.0 rewrite
     build = ':TSUpdate',
-    main = 'nvim-treesitter.configs', -- Sets main module to use for opts
+    main = 'nvim-treesitter.configs', -- Old API uses 'configs' (plural)
     dependencies = {
       'nvim-treesitter/nvim-treesitter-textobjects',
     },

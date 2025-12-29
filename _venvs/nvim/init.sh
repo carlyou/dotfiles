@@ -15,7 +15,7 @@ fi
 # Create venv using uv
 echo "Creating virtual environment at $VENV_DIR..."
 cd "$DOTFILES_DIR"
-uv venv "$VENV_DIR" --python 3.11
+uv venv "$VENV_DIR" --python 3.12
 uv pip install --python "$VENV_DIR" -r pyproject.toml
 
 echo "✓ Neovim Python environment ready at $VENV_DIR"

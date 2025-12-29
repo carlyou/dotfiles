@@ -27,11 +27,11 @@ packages=(
   "tmux"
   "tree"
   "ripgrep"
-  "fzf"
   "neovim"
   "python3-pip"
   "python3-venv"
   "build-essential"  # For building native extensions
+  "xclip"            # For tmux clipboard integration
 )
 
 for pkg in "${packages[@]}"; do
@@ -42,6 +42,16 @@ for pkg in "${packages[@]}"; do
     sudo apt install -y "$pkg"
   fi
 done
+
+# Install fzf (from git for latest version with --zsh support)
+if [ -d "$HOME/projects/fzf" ]; then
+  echo -e "\033[32m✅ fzf is already installed\033[0m"
+else
+  echo -e "\033[34m⬇️ Installing fzf from source...\033[0m"
+  mkdir -p "$HOME/projects"
+  git clone --depth 1 https://github.com/junegunn/fzf.git "$HOME/projects/fzf"
+  "$HOME/projects/fzf/install" --all
+fi
 
 # Install WezTerm (GUI terminal)
 if command -v wezterm &> /dev/null; then
@@ -101,12 +111,14 @@ else
   git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "$ZSH_CUSTOM_DIR/themes/powerlevel10k"
 fi
 
-# Install thefuck
-if command -v thefuck &> /dev/null; then
-  echo -e "\033[32m✅ thefuck is already installed\033[0m"
+# Install TPM (Tmux Plugin Manager)
+TPM_DIR="$HOME/.config/tmux/plugins/tpm"
+if [ -d "$TPM_DIR" ]; then
+  echo -e "\033[32m✅ TPM is already installed\033[0m"
 else
-  echo -e "\033[34m⬇️ Installing thefuck...\033[0m"
-  pip3 install --user thefuck
+  echo -e "\033[34m⬇️ Installing TPM (Tmux Plugin Manager)...\033[0m"
+  mkdir -p "$(dirname "$TPM_DIR")"
+  git clone https://github.com/tmux-plugins/tpm "$TPM_DIR"
 fi
 
 # Install uv (Python package manager)
@@ -134,7 +146,7 @@ echo -e "\033[34m🔗 Creating symlinks...\033[0m"
 
 # file: ~/.zshrc
 if [ ! -e ~/.zshrc ] || [ -L ~/.zshrc ]; then
-  ln -sf "$(pwd)/_zshrc" ~/.zshrc
+  ln -sfn "$(pwd)/_zshrc" ~/.zshrc
   echo -e "\033[32m✅ ~/.zshrc symlink created\033[0m"
 else
   echo -e "\033[33m⚠️  ~/.zshrc already exists (not a symlink, skipping)\033[0m"
@@ -142,7 +154,7 @@ fi
 
 # file: ~/.gitignore_global
 if [ ! -e ~/.gitignore_global ] || [ -L ~/.gitignore_global ]; then
-  ln -sf "$(pwd)/_gitignore_global" ~/.gitignore_global
+  ln -sfn "$(pwd)/_gitignore_global" ~/.gitignore_global
   echo -e "\033[32m✅ ~/.gitignore_global symlink created\033[0m"
 else
   echo -e "\033[33m⚠️  ~/.gitignore_global already exists (not a symlink, skipping)\033[0m"
@@ -157,7 +169,7 @@ folders="neovide nvim p10k tmux wezterm"
 [ ! -d ~/.config ] && mkdir -p ~/.config
 for folder in $folders; do
   if [ ! -e ~/.config/$folder ] || [ -L ~/.config/$folder ]; then
-    ln -sf "$(pwd)/_config/$folder" ~/.config/$folder
+    ln -sfn "$(pwd)/_config/$folder" ~/.config/$folder
     echo -e "\033[32m✅ ~/.config/$folder symlink created\033[0m"
   else
     echo -e "\033[33m⚠️  ~/.config/$folder already exists (not a symlink, skipping)\033[0m"
@@ -173,7 +185,7 @@ export PATH="$HOME/.local/bin:$PATH"
 # nvim venv
 [ ! -d ~/.local/share/nvim ] && mkdir -p ~/.local/share/nvim
 if [ ! -e ~/.local/share/nvim/venv ]; then
-  ln -sf "$(pwd)/_venvs/nvim" ~/.local/share/nvim/venv
+  ln -sfn "$(pwd)/_venvs/nvim" ~/.local/share/nvim/venv
   echo -e "\033[32m✅ ~/.local/share/nvim/venv symlink created\033[0m"
 else
   echo -e "\033[33mℹ️ ~/.local/share/nvim/venv already exists\033[0m"
@@ -184,7 +196,7 @@ fi
 if [ ! -e ~/.local/share/venvs/default ]; then
   echo -e "\033[34m⬇️ Creating default Python venv...\033[0m"
   uv sync --project "$(pwd)/_venvs/default" > /dev/null 2>&1
-  ln -sf "$(pwd)/_venvs/default/.venv" ~/.local/share/venvs/default
+  ln -sfn "$(pwd)/_venvs/default/.venv" ~/.local/share/venvs/default
   echo -e "\033[32m✅ ~/.local/share/venvs/default symlink created\033[0m"
 else
   echo -e "\033[33mℹ️ ~/.local/share/venvs/default already exists\033[0m"
@@ -227,4 +239,5 @@ echo "  • Use tmux for clipboard via OSC 52 over SSH"
 echo "  • Node.js available via nvm"
 echo "  • Python default venv auto-activates in zsh"
 echo "  • Rust/Cargo installed for neovide"
+echo "  • fzf installed from source (~/projects/fzf) for latest features"
 echo "\033[0m"

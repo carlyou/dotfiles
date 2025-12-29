@@ -33,7 +33,7 @@ wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_wid
 		foreground = "#828bb8"
 	end
 
-	text = tab.active_pane.title
+	local text = tab.active_pane.title
 	return {
 		{ Background = { Color = background } },
 		{ Foreground = { Color = foreground } },

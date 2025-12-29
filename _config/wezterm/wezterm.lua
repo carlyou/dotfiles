@@ -5,15 +5,18 @@ local config = wezterm.config_builder()
 
 config.font = wezterm.font("Monaco Nerd Font", { weight = "Bold" })
 --config.dpi = 76
-config.font_size = 12
+if wezterm.target_triple:find("linux") then
+	config.font_size = 10
+else
+	config.font_size = 12
+end
 --config.freetype_load_target = "Normal"
 --config.freetype_render_target = "HorizontalLcd"
 --config.freetype_render_target = "VerticalLcd"
 
-config.enable_tab_bar = false
-
 config.enable_tab_bar = true
 config.hide_tab_bar_if_only_one_tab = true
+config.use_fancy_tab_bar = false -- Use integrated title bar
 
 wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_width)
 	local background = "#222436"

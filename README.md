@@ -8,6 +8,29 @@
 - .config/wezterm
 - .config/zathura
 
+# Installation
+
+Choose the appropriate init script for your environment:
+
+## macOS
+```bash
+./init-macos.sh
+```
+
+## Ubuntu/Linux
+
+**With GUI apps (Desktop/Workstation)**
+```bash
+./init-ubuntu.sh
+```
+Includes: WezTerm, Neovide, Rust toolchain
+
+**Server/Headless (No GUI)**
+```bash
+./init-ubuntu-server.sh
+```
+Minimal installation without GUI applications
+
 # Dependencies
 
 - Zsh: [Oh My Zsh](https://ohmyz.sh/)

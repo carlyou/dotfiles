@@ -8,6 +8,22 @@ if vim.loop.os_uname().sysname == 'Linux' then
 else
   vim.opt.guifont = 'Monaco Nerd Font Mono:h12'
 end
+
+-- Disable italic fonts
+vim.api.nvim_create_autocmd('ColorScheme', {
+  pattern = '*',
+  callback = function()
+    -- Get all highlight groups and remove italic
+    for _, group in ipairs(vim.fn.getcompletion('', 'highlight')) do
+      local hl = vim.api.nvim_get_hl(0, { name = group })
+      if hl.italic then
+        hl.italic = false
+        vim.api.nvim_set_hl(0, group, hl)
+      end
+    end
+  end,
+})
+
 vim.opt.winblend = 50
 
 if vim.g.neovide then

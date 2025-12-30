@@ -255,7 +255,8 @@ dgx() {
     echo "Connecting to dgx-spark (tailscale)..."
     ssh dgx-spark
   else
-    echo "Error: dgx-spark is not reachable via local network or tailscale"
+    echo "dgx-spark is not reachable, checking Tailscale status..."
+    echo "$(tailscale status)"
     return 1
   fi
 }

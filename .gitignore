@@ -1,1 +1,4 @@
 _config/tmux/plugins
+
+# UV lock files (too large and platform-specific for dotfiles)
+_venvs/**/uv.lock

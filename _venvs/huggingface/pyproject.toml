@@ -1,0 +1,15 @@
+[project]
+name = "huggingface"
+version = "0.1.0"
+requires-python = ">=3.11"
+dependencies = [
+    "datasets>=4.4.2",
+    "evaluate>=0.4.6",
+    "ipykernel>=7.1.0",
+    "ipywidgets>=8.1.8",
+    "numpy>=2.4.0",
+    "openai>=2.14.0",
+    "sentencepiece>=0.2.1",
+    "torch>=2.9.1",
+    "transformers>=4.57.3",
+]

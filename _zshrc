@@ -18,12 +18,20 @@ source $ZSH/oh-my-zsh.sh
 # User configuration
 # ===========================
 set -o vi
+alias lt='ls -alrt'
 
-PROJECTS_DIR=~/projects
-alias cdd="cd ${PROJECTS_DIR}/dotfiles"
+export PROJECT_HOME=$HOME/projects
+alias projects='cd $PROJECT_HOME'
+
+if [ -d "$PROJECT_HOME/models" ]; then
+  export MODEL_HOME=$PROJECT_HOME/models
+  alias models='cd $MODEL_HOME'
+fi
+
+alias cdd='cd ${PROJECT_HOME}/dotfiles'
 alias cdm='cd "${$(pwd)/test/main}"'
 alias cdt='cd "${$(pwd)/main/test}"'
-alias cdp="cd ${PROJECTS_DIR}"
+alias cdp="cd ${PROJECTS_HOME}"
 alias cdg='cd `git rev-parse --show-toplevel`'
 
 alias gc='git checkout'
@@ -101,18 +109,6 @@ tl() {
     echo "No tmux servers found"
   fi
 }
-
-# ===========================
-# Python
-# ===========================
-alias p3='python3'
-alias jl='jupyter lab'
-
-# if default venv exists
-if [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/venvs/default/bin/activate ]; then
-  alias cdu="cd ${PROJECTS_DIR}/dotfiles/_venvs/default"
-  source ${XDG_DATA_HOME:-$HOME/.local/share}/venvs/default/bin/activate
-fi
 
 # ===========================
 # NVM
@@ -261,8 +257,31 @@ dgx() {
   fi
 }
 
+# Nvidia / CUDA
+# ===========================
+# if /usr/local/cuda folder exists, add it to path
+if [ -d /usr/local/cuda ]; then
+  export CUDA_HOME="/usr/local/cuda"
+  export LD_LIBRARY_PATH="/usr/local/cuda/lib64:${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+  export PATH="$CUDA_HOME/bin:$PATH"
+fi
+
 # ===========================
 # Extra local configurations
 # ===========================
-[ -f ~/.zshrc_local ] && source ~/.zshrc_local
 export PATH="$HOME/.local/bin:$PATH"
+[ -f ~/.zshrc_local ] && source ~/.zshrc_local
+
+# ===========================
+# Python
+# Make sure this is executed at the bottom, so that PATH is preserved properly across venvs
+# ===========================
+alias p3='python3'
+alias jl='jupyter lab'
+
+# if default venv exists
+if [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/venvs/default/bin/activate ]; then
+  alias cdvenv="cd ${PROJECTS_HOME}/dotfiles/_venvs"
+  source ${XDG_DATA_HOME:-$HOME/.local/share}/venvs/default/bin/activate
+fi
+

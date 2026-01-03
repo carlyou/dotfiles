@@ -13,6 +13,21 @@ dependencies = [
     "xgrammar>=0.1",
     "flashinfer-python",
     "outlines-core",
+    "huggingface>=0.0.1",
+    "ipykernel>=7.1.0",
+    "transformers[sentencepiece]>=4.57.3",
+    "datasets>=4.4.2",
+    "evaluate>=0.4.6",
+    "accelerate>=1.12.0",
+    "scikit-learn>=1.8.0",
+    "ipywidgets>=8.1.8",
+    "wandb>=0.23.1",
+    "numpy>=2.2.6",
+    "nbformat>=5.10.4",
+    "ninja>=1.13.0",
+    "flash-attn>=2.8.3",
+    "zstandard>=0.25.0",
+    "faiss-cpu>=1.13.2",
 ]
 
 [[tool.uv.index]]
@@ -36,3 +51,6 @@ vllm = { git = "https://github.com/vllm-project/vllm.git", rev = "357d435c5" }
 environments = [
     "sys_platform == 'linux' and platform_machine == 'aarch64'",
 ]
+
+[tool.uv.extra-build-dependencies]
+flash-attn = ["torch"]

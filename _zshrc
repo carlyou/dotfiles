@@ -22,16 +22,16 @@ alias lt='ls -alrt'
 
 export PROJECT_HOME=$HOME/projects
 alias projects='cd $PROJECT_HOME'
+alias cdp="cd ${PROJECT_HOME}"
 
 if [ -d "$PROJECT_HOME/models" ]; then
   export MODEL_HOME=$PROJECT_HOME/models
   alias models='cd $MODEL_HOME'
 fi
 
-alias cdd='cd ${PROJECT_HOME}/dotfiles'
+alias rc='source $HOME/.zshrc'
 alias cdm='cd "${$(pwd)/test/main}"'
 alias cdt='cd "${$(pwd)/main/test}"'
-alias cdp="cd ${PROJECTS_HOME}"
 alias cdg='cd `git rev-parse --show-toplevel`'
 
 alias gc='git checkout'
@@ -281,7 +281,8 @@ alias jl='jupyter lab'
 
 # if default venv exists
 if [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/venvs/default/bin/activate ]; then
-  alias cdvenv="cd ${PROJECTS_HOME}/dotfiles/_venvs"
+  alias cdpy="cd ${PROJECT_HOME}/dotfiles/_venvs/default"
+  alias cdvenv="cd ${PROJECT_HOME}/dotfiles/_venvs"
   source ${XDG_DATA_HOME:-$HOME/.local/share}/venvs/default/bin/activate
 fi
 

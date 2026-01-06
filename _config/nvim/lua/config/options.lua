@@ -24,7 +24,7 @@ vim.api.nvim_create_autocmd('ColorScheme', {
   end,
 })
 
-vim.opt.winblend = 50
+vim.opt.winblend = 20
 
 if vim.g.neovide then
   -- Put anything you want to happen only in Neovide here

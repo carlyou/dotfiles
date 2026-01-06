@@ -279,10 +279,19 @@ export PATH="$HOME/.local/bin:$PATH"
 alias p3='python3'
 alias jl='jupyter lab'
 
+# Change to the parent directory of the currently active virtual environment
+cduv() {
+  if [ -n "$VIRTUAL_ENV" ]; then
+    cd "$(dirname "$VIRTUAL_ENV")"
+  else
+    echo "No virtual environment is currently active"
+    return 1
+  fi
+}
+
 # if default venv exists
 if [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/venvs/default/bin/activate ]; then
   alias cdpy="cd ${PROJECT_HOME}/dotfiles/_venvs/default"
-  alias cdvenv="cd ${PROJECT_HOME}/dotfiles/_venvs"
   source ${XDG_DATA_HOME:-$HOME/.local/share}/venvs/default/bin/activate
 fi
 

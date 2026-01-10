@@ -8,6 +8,7 @@ dependencies = [
     "torchaudio>=2.9.1",
     "torchvision==0.24.1",
     "vllm",
+    "trl>=0.27.0",
     # vLLM dependencies (manually added to prevent removal during sync)
     "ray>=2.48",
     "xgrammar>=0.1",
@@ -30,12 +31,26 @@ dependencies = [
     "tiktoken>=0.12.0",
     "seqeval>=1.2.2",
     "datasets==3.6.0",
+    "sacrebleu>=2.5.1",
+    "matplotlib>=3.10.8",
+    "nltk>=3.9.2",
+    "rouge-score>=0.1.2",
+    "nvidia-cudnn-cu13>=9.13.0.50",
+    "fp-quant>=0.3.2",
+    "qutlass>=0.0.0",
+    "pip>=25.3",
+    "peft>=0.18.0",
+    "bitsandbytes>=0.49.1",
 ]
 
 [[tool.uv.index]]
 name = "pytorch-cu130"
 url = "https://download.pytorch.org/whl/cu130"
 explicit = true
+
+[[tool.uv.index]]
+name = "nvidia"
+url = "https://pypi.nvidia.com"
 
 [tool.uv.sources]
 torch = [

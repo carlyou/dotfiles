@@ -278,6 +278,8 @@ export PATH="$HOME/.local/bin:$PATH"
 # ===========================
 alias p3='python3'
 alias jl='jupyter lab'
+alias act='source .venv/bin/activate'
+alias deact='deactivate'
 
 # Change to the parent directory of the currently active virtual environment
 cduv() {

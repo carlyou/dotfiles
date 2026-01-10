@@ -130,6 +130,9 @@ fi
 
 git config --global core.excludesfile ~/.gitignore_global
 echo -e "\033[32m✅ git configured to use ~/.gitignore_global\033[0m"
+git config --global user.email "4531192+carlyou@users.noreply.github.com"
+git config --global user.name "Carl You"
+echo -e "\033[32m✅ git configured user.email and user.name\033[0m"
 
 # config directories (excluding GUI apps: neovide, wezterm)
 folders="nvim p10k tmux"

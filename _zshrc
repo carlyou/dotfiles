@@ -160,7 +160,7 @@ jupyter_server() {
 # ===========================
 # neovim
 # ===========================
-nvim_listen() {
+vim_listen() {
   NVIM_PORT="${1:-}"
   SESSION_NAME="[nvim]"
 
@@ -182,7 +182,7 @@ nvim_listen() {
 
 
 # Connect to neovim server with neovide
-nvim_connect() {
+vim_connect() {
   NVIM_HOST=$1
   echo "Neovim connecting to host $NVIM_HOST"
   if [ -z "$NVIM_HOST" ]; then
@@ -193,13 +193,10 @@ nvim_connect() {
   neovide --fork --server "$NVIM_HOST"
 }
 
+alias vim='nvim'
+alias vl='vim_listen'
+alias vc='vim_connect'
 alias nv='neovide --fork'
-# Use nvim in SSH sessions, neovide otherwise
-if [ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ]; then
-  alias vim='nvim'
-else
-  alias vim='neovide --fork'
-fi
 
 # ===========================
 # fzf

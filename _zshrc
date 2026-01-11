@@ -259,6 +259,7 @@ dgx() {
 # if /usr/local/cuda folder exists, add it to path
 if [ -d /usr/local/cuda ]; then
   export CUDA_HOME="/usr/local/cuda"
+  export TRITON_PTXAS_PATH="${CUDA_HOME}/bin/ptxas"
   export LD_LIBRARY_PATH="/usr/local/cuda/lib64:${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
   export PATH="$CUDA_HOME/bin:$PATH"
 fi

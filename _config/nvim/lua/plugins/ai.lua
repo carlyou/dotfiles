@@ -18,7 +18,7 @@ return {
     keys = {
       { '<leader>acc', '<cmd>ClaudeCode<cr>', desc = '[a]i [c]laude: Open/Toggle claude [c]ode' },
       { '<leader>acf', '<cmd>ClaudeCodeFocus<cr>', desc = '[a]i [c]laude: [f]ocus' },
-      { '<leader>acb', '<cmd>ClaudeCodeAdd %<cr>', desc = '[a]i [c]laude: send current [b]uffer' },
+      { '<leader>acb', '<cmd>ClaudeCodeAdd %:p<cr>', desc = '[a]i [c]laude: send current [b]uffer' },
       { '<leader>acs', '<cmd>ClaudeCodeSend<cr>', mode = 'v', desc = '[a]i [c]laude: send selected content' },
       {
         '<leader>acs',
@@ -37,7 +37,7 @@ return {
     'github/copilot.vim',
     init = function()
       -- Use dynamic node path (works on macOS with Homebrew/NVM and Linux with NVM/apt)
-      vim.g.copilot_node_command = vim.fn.exepath('node')
+      vim.g.copilot_node_command = vim.fn.exepath 'node'
       --vim.g.copilot_no_tab_map = true
       vim.cmd [[inoremap <silent><script><expr> <C-i> copilot#Accept("\t")]]
     end,

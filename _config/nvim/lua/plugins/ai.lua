@@ -7,6 +7,7 @@ return {
       log_level = 'info',
       auto_start = true,
       track_selection = true,
+      git_repo_cwd = true,
       terminal = {
         provider = 'snacks',
       },

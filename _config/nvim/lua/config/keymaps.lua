@@ -133,6 +133,8 @@ vim.keymap.set('n', '<leader><leader>q', vim.diagnostic.setloclist, { desc = 'Op
 -- NOTE: This won't work in all terminal emulators/tmux/etc. Try your own mapping
 -- or just use <C-\><C-n> to exit terminal mode
 vim.keymap.set('t', '<C-z>', '<C-\\><C-n>', { noremap = true, silent = true })
+vim.keymap.set('t', '<C-u>', '<C-\\><C-n><C-u>', { noremap = true, silent = true })
+vim.keymap.set('t', '<C-k>', '<C-\\><C-n>7k', { noremap = true, silent = true })
 vim.keymap.set('t', '<C-w>=', '<C-\\><C-n><C-w>=', { noremap = true, silent = true })
 vim.keymap.set('t', '<C-w>|', '<C-\\><C-n>100<C-w>|', { noremap = true, silent = true })
 vim.keymap.set('t', '<C-w>h', '<C-\\><C-n><C-w>h', { noremap = true, silent = true })

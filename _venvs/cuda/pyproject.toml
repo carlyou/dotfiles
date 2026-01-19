@@ -44,6 +44,9 @@ dependencies = [
     "zstandard>=0.25.0",
     "nvidia-cusparselt-cu13>=0.8.0",
     "tensorboardx>=2.6.4",
+    "imgcat>=0.6.0",
+    "trackio>=0.15.0",
+    "pycuda>=2026.1",
 ]
 
 [[tool.uv.index]]

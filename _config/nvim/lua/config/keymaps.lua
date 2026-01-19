@@ -27,6 +27,8 @@ vim.keymap.set('n', '#', '#zz', { noremap = true, silent = true })
 
 vim.keymap.set('n', '-', '<C-w><', { noremap = true, silent = true, desc = 'Narrower window' })
 vim.keymap.set('n', '+', '<C-w>>', { noremap = true, silent = true, desc = 'Wider window' })
+vim.keymap.set({ 'n', 'v', 't' }, '<C-->', '<C-w><', { noremap = true, silent = true, desc = 'Narrower window' })
+vim.keymap.set({ 'n', 'v', 't' }, '<C-=>', '<C-w>>', { noremap = true, silent = true, desc = 'Wider window' })
 
 --vim.keymap.set('v', 'J', ":m '>+1<cr>gv=gv", { noremap = true, silent = true })
 --vim.keymap.set('v', 'K', ":m '<-2<cr>gv=gv", { noremap = true, silent = true })

@@ -82,6 +82,16 @@ config.keys = {
 		mods = "CTRL",
 		action = wezterm.action.SendKey({ key = "RightArrow" }),
 	},
+	{
+		key = "=",
+		mods = "CTRL",
+		action = wezterm.action.SendKey({ key = "=", mods = "CTRL" }),
+	},
+	{
+		key = "-",
+		mods = "CTRL",
+		action = wezterm.action.SendKey({ key = "-", mods = "CTRL" }),
+	},
 }
 
 config.color_scheme = "Tokyo Night Moon"

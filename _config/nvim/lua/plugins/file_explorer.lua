@@ -80,4 +80,17 @@ return {
     },
     enabled = false,
   },
+
+  {
+    'hedyhli/outline.nvim',
+    opts = {
+      outline_window = {
+        width = 15,
+        hide_cursor = true,
+      },
+    },
+    keys = {
+      { '<leader>o', '<cmd>Outline<CR>', desc = 'Toggle Outline' },
+    },
+  },
 }

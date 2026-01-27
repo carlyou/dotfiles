@@ -47,6 +47,7 @@ dependencies = [
     "imgcat>=0.6.0",
     "trackio>=0.15.0",
     "pycuda>=2026.1",
+    "num2words>=0.5.14",
 ]
 
 [[tool.uv.index]]

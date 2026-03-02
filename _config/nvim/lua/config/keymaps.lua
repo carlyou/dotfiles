@@ -17,6 +17,59 @@ end, { expr = true, noremap = true })
 
 vim.keymap.set('n', 'Y', 'V"+y', { noremap = true, silent = true })
 vim.keymap.set('v', 'Y', '"+y', { noremap = true, silent = true })
+local function copy_file_reference(include_visual_range)
+  local file_path = vim.fn.expand '%:p'
+  if file_path == '' then
+    return
+  end
+
+  local display_path = file_path
+  local file_dir = vim.fn.fnamemodify(file_path, ':h')
+  local git_root_output = vim.fn.systemlist { 'git', '-C', file_dir, 'rev-parse', '--show-toplevel' }
+
+  if vim.v.shell_error == 0 and git_root_output[1] and git_root_output[1] ~= '' then
+    local git_root = git_root_output[1]
+    if file_path == git_root then
+      display_path = '.'
+    elseif file_path:sub(1, #git_root + 1) == git_root .. '/' then
+      display_path = file_path:sub(#git_root + 2)
+    end
+  else
+    local home = vim.loop.os_homedir()
+    if home and home ~= '' then
+      if file_path == home then
+        display_path = '~'
+      elseif file_path:sub(1, #home + 1) == home .. '/' then
+        display_path = '~' .. file_path:sub(#home + 1)
+      end
+    end
+  end
+
+  local reference
+
+  if include_visual_range then
+    local start_line = vim.fn.line 'v'
+    local end_line = vim.fn.line '.'
+    if start_line > end_line then
+      start_line, end_line = end_line, start_line
+    end
+    reference = string.format('%s:%d-%d', display_path, start_line, end_line)
+  else
+    reference = display_path
+  end
+
+  vim.fn.setreg('+', reference)
+  print('Copied: ' .. reference)
+end
+
+vim.keymap.set('n', '<leader>y', function()
+  copy_file_reference(false)
+end, { desc = 'Copy file path' })
+
+vim.keymap.set('x', '<leader>y', function()
+  copy_file_reference(true)
+end, { desc = 'Copy file path and selected line range' })
+
 vim.keymap.set('n', '<Space>', '<cmd>nohlsearch<cr>', { noremap = true, silent = true })
 vim.keymap.set('n', 'n', 'nzz', { noremap = true, silent = true })
 vim.keymap.set('n', 'N', 'Nzz', { noremap = true, silent = true })

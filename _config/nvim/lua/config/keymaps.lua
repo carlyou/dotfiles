@@ -156,8 +156,20 @@ vim.keymap.set('n', '<C-w><C-t>', function()
     end
   end
 end, { noremap = true, silent = true })
-vim.keymap.set('t', '<C-p>', '<Up>', { noremap = true, silent = true })
-vim.keymap.set('t', '<C-n>', '<Down>', { noremap = true, silent = true })
+vim.keymap.set('t', '<C-p>', function()
+  local name = vim.api.nvim_buf_get_name(0)
+  if name:match '^term://.*opencode' then
+    return '<C-p>'
+  end
+  return '<Up>'
+end, { noremap = true, silent = true, expr = true })
+vim.keymap.set('t', '<C-n>', function()
+  local name = vim.api.nvim_buf_get_name(0)
+  if name:match '^term://.*opencode' then
+    return '<C-n>'
+  end
+  return '<Down>'
+end, { noremap = true, silent = true, expr = true })
 vim.keymap.set('t', '<C-f>', '<Right>', { noremap = true, silent = true })
 vim.keymap.set('t', '<C-b>', '<Left>', { noremap = true, silent = true })
 vim.keymap.set('t', '<D-v>', function()

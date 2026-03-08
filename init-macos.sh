@@ -88,7 +88,15 @@ git config --global core.excludesfile ~/.gitignore_global
 echo -e "\033[32m✅ git configured to use ~/.gitignore_global\033[0m"
 
 # file: ~/.config/...
-folders="neovide nvim p10k tmux wezterm zathura"
+folders="
+  ghostty
+  neovide
+  nvim
+  p10k
+  tmux
+  wezterm
+  zathura
+"
 
 [ ! -d ~/.config ] && mkdir ~/.config
 for folder in $folders; do

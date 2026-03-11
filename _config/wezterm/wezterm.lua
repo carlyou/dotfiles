@@ -2,6 +2,7 @@ local wezterm = require("wezterm")
 local wezterm_open_url = require("wezterm_open_url")
 
 local config = wezterm.config_builder()
+local act = wezterm.action
 
 config.font = wezterm.font("Monaco Nerd Font", { weight = "Bold" })
 --config.dpi = 76
@@ -47,6 +48,10 @@ config.initial_cols = 160
 config.window_decorations = "RESIZE"
 config.window_background_opacity = 0.9
 config.macos_window_background_blur = 20
+config.inactive_pane_hsb = {
+	saturation = 0.5,
+	brightness = 0.7,
+}
 
 -- Change opacity when window loses/gains focus
 wezterm.on("window-focus-changed", function(window, pane)
@@ -80,20 +85,93 @@ config.keys = {
 	{
 		key = "f",
 		mods = "CTRL",
-		action = wezterm.action.SendKey({ key = "RightArrow" }),
+		action = act.SendKey({ key = "RightArrow" }),
 	},
 	{
 		key = "=",
 		mods = "CTRL",
-		action = wezterm.action.SendKey({ key = "=", mods = "CTRL" }),
+		action = act.SendKey({ key = "=", mods = "CTRL" }),
 	},
 	{
 		key = "-",
 		mods = "CTRL",
-		action = wezterm.action.SendKey({ key = "-", mods = "CTRL" }),
+		action = act.SendKey({ key = "-", mods = "CTRL" }),
+	},
+	{
+		key = "|",
+		mods = "CTRL|SHIFT",
+		action = act.SplitHorizontal({ domain = "CurrentPaneDomain" }),
+	},
+	{
+		key = "_",
+		mods = "CTRL|SHIFT",
+		action = act.SplitVertical({ domain = "CurrentPaneDomain" }),
+	},
+	{
+		key = "h",
+		mods = "CTRL|SHIFT",
+		action = act.ActivatePaneDirection("Left"),
+	},
+	{
+		key = "l",
+		mods = "CTRL|SHIFT",
+		action = act.ActivatePaneDirection("Right"),
+	},
+	{
+		key = "k",
+		mods = "CTRL|SHIFT",
+		action = act.ActivatePaneDirection("Up"),
+	},
+	{
+		key = "j",
+		mods = "CTRL|SHIFT",
+		action = act.ActivatePaneDirection("Down"),
+	},
+	{
+		key = "x",
+		mods = "CTRL|SHIFT",
+		action = act.PaneSelect({
+			mode = "SwapWithActive",
+		}),
+	},
+	{
+		key = "[",
+		mods = "CTRL|SHIFT",
+		action = act.ActivateCopyMode,
+	},
+	{
+		key = "9",
+		mods = "CTRL",
+		action = act.PaneSelect({
+			alphabet = "1234567890",
+		}),
 	},
 }
 
+local copy_mode = wezterm.gui.default_key_tables().copy_mode
+table.insert(copy_mode, {
+	key = "y",
+	mods = "NONE",
+	action = act.Multiple({
+		act.CopyTo("ClipboardAndPrimarySelection"),
+		act.CopyMode("Close"),
+	}),
+})
+table.insert(copy_mode, {
+	key = "y",
+	mods = "SHIFT",
+	action = act.Multiple({
+		-- select cursor line
+		act.SelectTextAtMouseCursor("Line"),
+		act.CopyTo("ClipboardAndPrimarySelection"),
+		act.CopyMode("Close"),
+	}),
+})
+config.key_tables = {
+	copy_mode = copy_mode,
+}
+
+--config.color_scheme = "Solarized Light (Gogh)"
 config.color_scheme = "Tokyo Night Moon"
 --config.color_scheme = "Cobalt2"
 

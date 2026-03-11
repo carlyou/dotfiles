@@ -46,6 +46,7 @@ return {
       auto_start = true,
       track_selection = true,
       git_repo_cwd = true,
+      terminal_cmd = '~/.local/bin/claude',
       terminal = {
         provider = 'snacks',
       },

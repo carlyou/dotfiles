@@ -66,7 +66,11 @@ fi
 # Add GUI config directory symlinks
 echo -e "\033[34m🔗 Creating GUI config symlinks...\033[0m"
 
-gui_folders="neovide wezterm"
+gui_folders="
+  ghostty
+  neovide
+  wezterm
+"
 
 [ ! -d ~/.config ] && mkdir -p ~/.config
 for folder in $gui_folders; do

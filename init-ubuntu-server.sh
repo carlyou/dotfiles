@@ -135,7 +135,11 @@ git config --global user.name "Carl You"
 echo -e "\033[32m✅ git configured user.email and user.name\033[0m"
 
 # config directories (excluding GUI apps: neovide, wezterm)
-folders="nvim p10k tmux"
+folders="
+  nvim
+  p10k
+  tmux
+"
 
 [ ! -d ~/.config ] && mkdir -p ~/.config
 for folder in $folders; do

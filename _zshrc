@@ -18,6 +18,9 @@ source $ZSH/oh-my-zsh.sh
 # User configuration
 # ===========================
 set -o vi
+
+alias cld='claude --dangerously-skip-permissions'
+
 alias lt='ls -alrt'
 
 export PROJECT_HOME=$HOME/projects
@@ -33,11 +36,13 @@ fi
 alias rc='source $HOME/.zshrc'
 alias cdg='cd `git rev-parse --show-toplevel`'
 
+alias ga='git add'
 alias gc='git checkout'
 alias gd='git diff'
 alias gdc='git diff --cached'
 alias gp='git pull'
 alias gs='git status'
+alias gw='git worktree'
 
 unalias gm
 gm() {
@@ -52,8 +57,12 @@ if command -v thefuck >/dev/null 2>&1; then
 fi
 
 # ===========================
-# Tmux
+# Tmux / shpool
 # ===========================
+alias sp="shpool"
+alias spa="shpool attach"
+alias spd="shpool detach"
+
 ta() {
   local servername="${1:-}"
 

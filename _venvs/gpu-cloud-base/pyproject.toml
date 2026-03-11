@@ -1,0 +1,15 @@
+[project]
+name = "gpu-cloud-base"
+version = "0.1.0"
+description = "Mock GPU cloud environment (Lambda, Vast.ai, RunPod, etc.)"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "setuptools",
+    "wheel",
+    "cmake",
+    "ninja",
+    "torch",
+    "setuptools-scm>=9.2.2",
+    "numpy>=2.4.2",
+]

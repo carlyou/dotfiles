@@ -10,3 +10,6 @@ Thumbs.db
 
 # LLM local files
 .claude/
+
+
+.clangd

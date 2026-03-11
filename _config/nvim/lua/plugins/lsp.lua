@@ -269,6 +269,17 @@ return {
           end,
         },
       }
+
+      -- System clangd (not managed by Mason - no aarch64 binary available)
+      vim.lsp.config('clangd', {
+        cmd = {
+          'clangd',
+          '--background-index',
+          '--clang-tidy',
+        },
+        filetypes = { 'c', 'cpp', 'objc', 'objcpp', 'cuda' },
+      })
+      vim.lsp.enable('clangd')
     end,
   },
 }

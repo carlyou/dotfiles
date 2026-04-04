@@ -10,6 +10,7 @@ dependencies = [
     "jupytext>=1.17.3",
     "nvitop>=1.6.1",
     "pip>=25.2",
+    "vastai>=0.2.8",
 ]
 
 [dependency-groups]

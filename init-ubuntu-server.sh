@@ -98,15 +98,31 @@ else
 fi
 
 # Install NVM (Node Version Manager) - optional but in your zshrc
-if [ -d "$HOME/.nvm" ]; then
-  echo -e "\033[32m✅ NVM is already installed\033[0m"
+# NVM may already exist at $HOME/.nvm (user install) or /opt/nvm (system install)
+if [ -s "$HOME/.nvm/nvm.sh" ]; then
+  export NVM_DIR="$HOME/.nvm"
+  echo -e "\033[32m✅ NVM is already installed at $NVM_DIR\033[0m"
+elif [ -s "/opt/nvm/nvm.sh" ]; then
+  export NVM_DIR="/opt/nvm"
+  echo -e "\033[32m✅ NVM is already installed at $NVM_DIR\033[0m"
 else
   echo -e "\033[34m⬇️ Installing NVM...\033[0m"
   curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.0/install.sh | bash
   export NVM_DIR="$HOME/.nvm"
-  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-  echo -e "\033[34m⬇️ Installing Node.js LTS...\033[0m"
-  nvm install --lts
+fi
+
+# Source nvm for this shell so `nvm install` works below
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
+if command -v nvm &> /dev/null; then
+  if nvm ls --no-colors 2>/dev/null | grep -q 'lts/\*'; then
+    echo -e "\033[32m✅ Node.js LTS is already installed\033[0m"
+  else
+    echo -e "\033[34m⬇️ Installing Node.js LTS...\033[0m"
+    nvm install --lts
+  fi
+else
+  echo -e "\033[33m⚠️  nvm not loaded (NVM_DIR=$NVM_DIR); skipping Node.js install\033[0m"
 fi
 
 # Symlink configuration files

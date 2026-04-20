@@ -276,10 +276,12 @@ return {
           'clangd',
           '--background-index',
           '--clang-tidy',
+          '--header-insertion=never',
+          '--query-driver=/usr/local/cuda/bin/nvcc',
         },
         filetypes = { 'c', 'cpp', 'objc', 'objcpp', 'cuda' },
       })
-      vim.lsp.enable('clangd')
+      vim.lsp.enable 'clangd'
     end,
   },
 }

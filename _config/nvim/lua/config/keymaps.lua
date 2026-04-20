@@ -1,6 +1,6 @@
-vim.keymap.set('n', '<leader>e', function()
-  vim.cmd(':lua vim.print(' .. vim.fn.getreg '+' .. ')')
-end, { noremap = true, silent = true, desc = '[e]xecute and print yanked command' })
+--vim.keymap.set('n', '<leader>e', function()
+--vim.cmd(':lua vim.print(' .. vim.fn.getreg '+' .. ')')
+--end, { noremap = true, silent = true, desc = '[e]xecute and print yanked command' })
 
 vim.keymap.set('n', '<leader>w', function()
   vim.wo.wrap = not vim.wo.wrap
@@ -65,6 +65,10 @@ end
 vim.keymap.set('n', '<leader>y', function()
   copy_file_reference(false)
 end, { desc = 'Copy file path' })
+
+vim.keymap.set('n', '<leader>Y', function()
+  copy_file_reference(true)
+end, { desc = 'Copy file path and selected line range' })
 
 vim.keymap.set('x', '<leader>y', function()
   copy_file_reference(true)

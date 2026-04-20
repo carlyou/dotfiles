@@ -12,6 +12,50 @@ return {
   },
 
   {
+    'nvim-neo-tree/neo-tree.nvim',
+    branch = 'v3.x',
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      'nvim-tree/nvim-web-devicons',
+      'MunifTanjim/nui.nvim',
+    },
+    cmd = 'Neotree',
+    keys = {
+      { '<leader>e', '<cmd>Neotree toggle<cr>', desc = 'Explorer (Neo-tree)' },
+      { '<leader>E', '<cmd>Neotree reveal<cr>', desc = 'Explorer reveal current file' },
+    },
+    opts = {
+      close_if_last_window = true,
+      window = { width = 32 },
+      filesystem = {
+        follow_current_file = { enabled = true },
+        use_libuv_file_watcher = true,
+        filtered_items = {
+          hide_dotfiles = false,
+          hide_gitignored = true,
+          hide_by_name = { '.git', '.DS_Store', '__pycache__' },
+        },
+      },
+      default_component_configs = {
+        indent = { with_markers = true },
+        git_status = {
+          symbols = {
+            added = '+',
+            modified = '~',
+            deleted = '-',
+            renamed = '→',
+            untracked = '?',
+            ignored = '',
+            unstaged = '',
+            staged = '●',
+            conflict = '!',
+          },
+        },
+      },
+    },
+  },
+
+  {
     'stevearc/oil.nvim',
     ---@module 'oil'
     ---@type oil.SetupOpts

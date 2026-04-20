@@ -59,7 +59,7 @@ return {
       { '<leader>acc', '<cmd>ClaudeCode<cr>', desc = '[a]i [c]laude: Open/Toggle claude [c]ode' },
       { '<leader>acf', '<cmd>ClaudeCodeFocus<cr>', desc = '[a]i [c]laude: [f]ocus' },
       { '<leader>acb', '<cmd>ClaudeCodeAdd %:p<cr>', desc = '[a]i [c]laude: send current [b]uffer' },
-      { '<leader>acs', '<cmd>ClaudeCodeSend<cr>', mode = 'v', desc = '[a]i [c]laude: send selected content' },
+      { '<leader>acs', '<cmd>ClaudeCodeSend<cr>', mode = { 'n', 'v' }, desc = '[a]i [c]laude: send selected content' },
       {
         '<leader>acs',
         '<cmd>ClaudeCodeTreeAdd<cr>',

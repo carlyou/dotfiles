@@ -239,3 +239,19 @@ end, { noremap = true, silent = true })
 --  See `:help wincmd` for a list of all window commands
 vim.keymap.set('n', 'HH', '<C-w><C-h>', { desc = 'Move focus to the left window' })
 vim.keymap.set('n', 'LL', '<C-w><C-l>', { desc = 'Move focus to the right window' })
+
+local show_warnings = true
+vim.keymap.set('n', '<leader>w', function()
+  show_warnings = not show_warnings
+  vim.diagnostic.config {
+    virtual_text = show_warnings or { severity = { min = vim.diagnostic.severity.ERROR } },
+    signs = show_warnings or { severity = { min = vim.diagnostic.severity.ERROR } },
+    underline = show_warnings or { severity = { min = vim.diagnostic.severity.ERROR } },
+  }
+end, { desc = 'Toggle warnings' })
+
+vim.keymap.set('n', '<leader>W', function()
+  local new_config = not vim.diagnostic.is_enabled()
+  vim.diagnostic.enable(new_config)
+  vim.notify('Diagnostics ' .. (new_config and 'enabled' or 'disabled'))
+end, { desc = 'Toggle diagnostics' })

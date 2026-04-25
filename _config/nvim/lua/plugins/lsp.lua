@@ -82,6 +82,14 @@ return {
           --  To jump back, press <C-t>.
           --map('grd', require('telescope.builtin').lsp_definitions, '[G]oto [D]efinition')
           map('grd', require('fzf-lua').lsp_definitions, '[G]oto [D]efinition')
+          map('grs', function()
+            vim.cmd 'sp'
+            require('fzf-lua').lsp_definitions()
+          end, '[G]oto [D]efinition in [V]split')
+          map('grv', function()
+            vim.cmd 'vs'
+            require('fzf-lua').lsp_definitions()
+          end, '[G]oto [D]efinition in [V]split')
 
           -- WARN: This is not Goto Definition, this is Goto Declaration.
           --  For example, in C this would take you to the header.

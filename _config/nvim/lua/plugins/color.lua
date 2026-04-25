@@ -57,12 +57,12 @@ return {
         styles = {
           comments = { italic = false }, -- Disable italics in comments
         },
-        on_colors = function(colors)
-          colors.bg = '#1a1b26'
-          colors.bg_dark = '#16161e'
-          colors.bg_dark1 = '#0C0E14'
-          colors.bg_highlight = '#292e42'
-        end,
+        --on_colors = function(colors)
+        --colors.bg = '#1a1b26'
+        --colors.bg_dark = '#16161e'
+        --colors.bg_dark1 = '#0C0E14'
+        --colors.bg_highlight = '#292e42'
+        --end,
       }
 
       -- Load the colorscheme here.

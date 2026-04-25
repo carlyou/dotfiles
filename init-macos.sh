@@ -30,6 +30,7 @@ fi
 
 # Homebrew packages
 packages="
+  bash
   wezterm
   node
   thefuck
@@ -111,8 +112,7 @@ done
 # file: ~/.local/share/nvim/venv/nvim
 [ ! -d ~/.local/share/nvim ] && mkdir -p ~/.local/share/nvim
 if [ ! -e ~/.local/share/nvim/venv ]; then
-  ln -s "$(pwd)/_venvs/nvim" ~/.local/share/nvim/venv/nvim
-  echo -e "\033[32m✅ ~/.local/share/nvim/venv/nvim symlink created\033[0m"
+  cd $(pwd)/_venvs/nvim && ./init.sh
 else
   echo -e "\033[33mℹ️ ~/.local/share/nvim/venv/nvim already exists\033[0m"
 fi

@@ -55,6 +55,7 @@ return {
       { '<leader>f', '<cmd>FzfLua files<CR>' },
       { '<leader><leader>f', '<cmd>FzfLua files cwd="~"<CR>' },
       { '<leader>g', '<cmd>FzfLua git_files<CR>' },
+      { '<leader>G', '<cmd>FzfLua git_status<CR>' },
       {
         '<leader><leader>g',
         function()

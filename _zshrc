@@ -19,6 +19,7 @@ source $ZSH/oh-my-zsh.sh
 # ===========================
 set -o vi
 
+alias cc='claude'
 alias cld='claude --dangerously-skip-permissions'
 
 alias lt='ls -alrt'

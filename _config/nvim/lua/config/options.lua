@@ -3,11 +3,10 @@ vim.g.maplocalleader = '\\'
 vim.g.have_nerd_font = true -- https://github.com/ryanoasis/nerd-fonts
 
 -- UI/GUI settings
-if vim.loop.os_uname().sysname == 'Linux' then
-  vim.opt.guifont = 'Monaco Nerd Font Mono:h10'
-else
-  vim.opt.guifont = 'Monaco Nerd Font Mono:h12'
-end
+-- guifont is rendered by the local Neovide GUI (the Mac), even when nvim runs
+-- remotely via `neovide --server`. Keep a single size so local and SSH match;
+-- nvim's own OS (Linux on the remote) is irrelevant to the rendered size.
+vim.opt.guifont = 'Monaco Nerd Font Mono:h12'
 
 -- Disable italic fonts
 vim.api.nvim_create_autocmd('ColorScheme', {

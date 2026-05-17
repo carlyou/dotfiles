@@ -26,21 +26,32 @@ vim.api.nvim_create_autocmd('ColorScheme', {
 
 vim.opt.winblend = 20
 
-if vim.g.neovide then
-  -- Put anything you want to happen only in Neovide here
-  vim.g.neovide_input_macos_option_key_is_meta = 'only_left'
+-- Apply Neovide settings on UIEnter, not at startup. With `neovide --server`
+-- (vim_connect / `vc`), the remote nvim starts headless in tmux, so
+-- `vim.g.neovide` is still nil when this file runs and the settings would be
+-- skipped. UIEnter fires when the GUI actually attaches (both for embedded
+-- `neovide --fork` and `--server` mode), so `vim.g.neovide` is reliably set
+-- by then -- making local and SSH behave identically.
+vim.api.nvim_create_autocmd('UIEnter', {
+  desc = 'Apply Neovide-only settings when the GUI attaches',
+  callback = function()
+    if not vim.g.neovide then
+      return
+    end
+    vim.g.neovide_input_macos_option_key_is_meta = 'only_left'
 
-  vim.g.neovide_opacity = 0.90
-  vim.g.neovide_normal_opacity = 0.90
-  vim.g.neovide_show_border = true
-  vim.g.neovide_window_blurred = true
-  vim.g.neovide_floating_blur_amount_x = 2.0
-  vim.g.neovide_floating_blur_amount_y = 2.0
+    vim.g.neovide_opacity = 0.90
+    vim.g.neovide_normal_opacity = 0.90
+    vim.g.neovide_show_border = true
+    vim.g.neovide_window_blurred = true
+    vim.g.neovide_floating_blur_amount_x = 2.0
+    vim.g.neovide_floating_blur_amount_y = 2.0
 
-  vim.g.neovide_remember_window_size = true
-  vim.g.neovide_remember_window_position = true
-  --vim.g.neovide_hide_mouse_when_typing = true
-end
+    vim.g.neovide_remember_window_size = true
+    vim.g.neovide_remember_window_position = true
+    --vim.g.neovide_hide_mouse_when_typing = true
+  end,
+})
 
 -- Tab settings
 vim.opt.expandtab = true

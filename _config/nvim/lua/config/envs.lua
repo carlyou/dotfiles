@@ -10,7 +10,6 @@ local venv_path = vim.fn.stdpath 'data' .. '/venv'
 local python_path
 
 python_path = venv_path .. '/bin/python'
-vim.notify('Neovim Python environment:' .. python_path, vim.log.levels.WARN)
 
 -- Check if venv exists
 if vim.fn.executable(python_path) == 1 then

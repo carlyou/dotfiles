@@ -101,6 +101,14 @@ return {
           git_icons = false,
           hidden = true,
         },
+        previewers = {
+          builtin = {
+            -- Disable the nvim-treesitter-context overlay in previews; it
+            -- crashes under nvim 0.12 with the v0.9.3-pinned nvim-treesitter
+            -- (TSNode:range nil in treesitter-context.context.get).
+            treesitter = { context = false },
+          },
+        },
         winopts = {
           preview = {
             border = 'rounded',

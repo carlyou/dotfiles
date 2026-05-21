@@ -255,3 +255,5 @@ vim.keymap.set('n', '<leader>W', function()
   vim.diagnostic.enable(new_config)
   vim.notify('Diagnostics ' .. (new_config and 'enabled' or 'disabled'))
 end, { desc = 'Toggle diagnostics' })
+
+vim.keymap.set('n', 'grb', '<cmd>Git blame<cr>', { noremap = true, silent = true })

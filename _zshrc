@@ -311,3 +311,6 @@ if [ -f ${XDG_DATA_HOME:-$HOME/.local/share}/venvs/default/bin/activate ]; then
   source ${XDG_DATA_HOME:-$HOME/.local/share}/venvs/default/bin/activate
 fi
 
+
+# The next line updates PATH for Nebius CLI.
+if [ -f '/Users/carlyou/.nebius/path.zsh.inc' ]; then source '/Users/carlyou/.nebius/path.zsh.inc'; fi

@@ -1,6 +1,6 @@
 -- nvim-treesitter v1.0 rewrite (main branch) for Neovim 0.12+
--- Requires `tree-sitter-cli` installed via Homebrew (NOT npm):
---   brew install tree-sitter
+-- Requires the tree-sitter CLI installed via Homebrew (NOT npm):
+--   brew install tree-sitter-cli   (the `tree-sitter` formula is now lib-only)
 
 local PARSERS = {
   'bash',

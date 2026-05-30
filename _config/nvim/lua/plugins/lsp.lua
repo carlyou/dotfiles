@@ -278,6 +278,18 @@ return {
         },
       }
 
+      -- Force pyright to root at the git repo root.
+      -- Some repos (e.g. flash-attention) nest pyproject.toml files inside packages
+      -- (flash_attn/cute/pyproject.toml). pyright's default root_markers list pyproject.toml
+      -- at equal priority with .git, so it would root *inside* the package and fail to resolve
+      -- sibling `flash_attn.*` imports. A root_dir function takes precedence over root_markers.
+      vim.lsp.config('pyright', {
+        root_dir = function(bufnr, on_dir)
+          local fname = vim.api.nvim_buf_get_name(bufnr)
+          on_dir(vim.fs.root(fname, '.git') or vim.fs.dirname(fname))
+        end,
+      })
+
       -- System clangd (not managed by Mason - no aarch64 binary available)
       vim.lsp.config('clangd', {
         cmd = {

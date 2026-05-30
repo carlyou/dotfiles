@@ -57,6 +57,17 @@ return {
         styles = {
           comments = { italic = false }, -- Disable italics in comments
         },
+        -- Keep transparency for floats/popups/statusline, but force a solid
+        -- background on the editor body and the sidebar/gutter so the main
+        -- window shows tokyonight's bg (#1a1b26 on the night variant) instead
+        -- of bleeding through to the terminal background. Runs after the
+        -- transparent setting, so it wins.
+        on_highlights = function(hl, c)
+          hl.Normal = { bg = c.bg }
+          hl.NormalNC = { bg = c.bg }
+          hl.SignColumn = { bg = c.bg }
+          hl.LineNr = { bg = c.bg }
+        end,
         --on_colors = function(colors)
         --colors.bg = '#1a1b26'
         --colors.bg_dark = '#16161e'

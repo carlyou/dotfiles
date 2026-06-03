@@ -132,6 +132,9 @@ return {
         width = 15,
         hide_cursor = true,
       },
+      symbols = {
+        filter = { 'Variable', exclude = true },
+      },
     },
     keys = {
       { '<leader>o', '<cmd>Outline<CR>', desc = 'Toggle Outline' },

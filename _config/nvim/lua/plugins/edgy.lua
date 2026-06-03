@@ -3,7 +3,7 @@ return {
     'folke/edgy.nvim',
     event = 'VeryLazy',
     init = function()
-      vim.opt.laststatus = 3 -- global statusline (recommended by edgy)
+      vim.opt.laststatus = 2 -- one statusline per window
       vim.opt.splitkeep = 'screen'
       -- edgy does not play well with cmdheight=0 (set globally in
       -- config/options.lua): opening an edgebar shrinks editor windows

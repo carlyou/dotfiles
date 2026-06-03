@@ -302,6 +302,18 @@ return {
         filetypes = { 'c', 'cpp', 'objc', 'objcpp', 'cuda' },
       })
       vim.lsp.enable 'clangd'
+
+      -- Anchor pyright at the workspace root (uv.lock/.git/pyrightconfig.json) rather than the
+      -- nearest pyproject.toml, so monorepo editable installs resolved via the root .venv and the
+      -- root pyrightconfig.json are picked up instead of a nested package dir.
+      vim.lsp.config('pyright', {
+        root_dir = function(bufnr, on_dir)
+          local fname = vim.api.nvim_buf_get_name(bufnr)
+          local marker = vim.fs.find({ 'uv.lock', 'pyrightconfig.json', '.git' }, { path = fname, upward = true })[1]
+          on_dir(marker and vim.fs.dirname(marker) or vim.fs.dirname(fname))
+        end,
+      })
+      vim.lsp.enable 'pyright'
     end,
   },
 }

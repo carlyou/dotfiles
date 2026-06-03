@@ -22,6 +22,9 @@ set -o vi
 alias cc='claude'
 alias cld='claude --dangerously-skip-permissions'
 
+alias k='kubectl'
+alias kc='kubectl config'
+
 alias lt='ls -alrt'
 
 export PROJECT_HOME=$HOME/projects

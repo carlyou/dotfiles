@@ -28,7 +28,6 @@ packages=(
   "tmux"
   "tree"
   "ripgrep"
-  "neovim"
   "python3-pip"
   "python3-venv"
   "build-essential"  # For building native extensions
@@ -36,13 +35,37 @@ packages=(
 )
 
 for pkg in "${packages[@]}"; do
-  if dpkg -l | grep -qw "$pkg"; then
+  if dpkg-query -W -f='${Status}' "$pkg" 2>/dev/null | grep -q "install ok installed"; then
     echo -e "\033[32m✅ $pkg is already installed\033[0m"
   else
     echo -e "\033[34m⬇️ Installing $pkg...\033[0m"
     sudo apt install -y "$pkg"
   fi
 done
+
+# Install Neovim (official release tarball; apt ships versions too old for this config)
+# Match v0.10+ or any v1+; older nvim (e.g. 0.9 from apt) fails the nvim Lua config.
+if command -v nvim &> /dev/null && nvim --version 2>/dev/null | head -1 | grep -qE 'NVIM v(0\.[1-9][0-9]|[1-9])'; then
+  echo -e "\033[32m✅ Neovim ($(nvim --version | head -1)) is already installed\033[0m"
+else
+  case "$(uname -m)" in
+    x86_64|amd64) NVIM_ARCH="x86_64" ;;
+    aarch64|arm64) NVIM_ARCH="arm64" ;;
+    *) NVIM_ARCH="" ;;
+  esac
+  if [ -z "$NVIM_ARCH" ]; then
+    echo -e "\033[31m❌ Unsupported architecture for Neovim release: $(uname -m)\033[0m"
+  else
+    echo -e "\033[34m⬇️ Installing Neovim (linux-$NVIM_ARCH) from GitHub releases...\033[0m"
+    NVIM_TGZ="nvim-linux-${NVIM_ARCH}.tar.gz"
+    curl -fsSL -o "/tmp/$NVIM_TGZ" "https://github.com/neovim/neovim/releases/latest/download/$NVIM_TGZ"
+    sudo rm -rf "/opt/nvim-linux-${NVIM_ARCH}"
+    sudo tar -C /opt -xzf "/tmp/$NVIM_TGZ"
+    sudo ln -sfn "/opt/nvim-linux-${NVIM_ARCH}/bin/nvim" /usr/local/bin/nvim
+    rm -f "/tmp/$NVIM_TGZ"
+    echo -e "\033[32m✅ Neovim installed ($(nvim --version | head -1))\033[0m"
+  fi
+fi
 
 # Install fzf (from git for latest version with --zsh support)
 if [ -d "$HOME/projects/fzf" ]; then
@@ -173,11 +196,13 @@ echo -e "\033[34m🐍 Setting up Python virtual environments...\033[0m"
 # Ensure uv is in PATH for this session
 export PATH="$HOME/.local/bin:$PATH"
 
-# nvim venv
+# nvim venv (init.sh creates a real venv at ~/.local/share/nvim/venv via uv;
+# nvim's envs.lua expects a python interpreter at venv/bin/python)
 [ ! -d ~/.local/share/nvim ] && mkdir -p ~/.local/share/nvim
 if [ ! -e ~/.local/share/nvim/venv ]; then
-  ln -sfn "$(pwd)/_venvs/nvim" ~/.local/share/nvim/venv
-  echo -e "\033[32m✅ ~/.local/share/nvim/venv symlink created\033[0m"
+  echo -e "\033[34m⬇️ Creating Neovim Python venv...\033[0m"
+  ( cd "$(pwd)/_venvs/nvim" && ./init.sh )
+  echo -e "\033[32m✅ ~/.local/share/nvim/venv created\033[0m"
 else
   echo -e "\033[33mℹ️ ~/.local/share/nvim/venv already exists\033[0m"
 fi

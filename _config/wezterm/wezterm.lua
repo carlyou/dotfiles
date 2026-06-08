@@ -88,6 +88,16 @@ config.keys = {
 		action = act.SendKey({ key = "RightArrow" }),
 	},
 	{
+		key = "k",
+		mods = "CTRL",
+		action = act.SendKey({ key = "PageUp" }),
+	},
+	{
+		key = "j",
+		mods = "CTRL",
+		action = act.SendKey({ key = "PageDown" }),
+	},
+	{
 		key = "=",
 		mods = "CTRL",
 		action = act.SendKey({ key = "=", mods = "CTRL" }),

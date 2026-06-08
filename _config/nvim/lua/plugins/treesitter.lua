@@ -47,7 +47,7 @@ return {
     build = ':TSUpdate',
     config = function()
       require('nvim-treesitter').setup {
-        install_dir = vim.fn.stdpath('data') .. '/site',
+        install_dir = vim.fn.stdpath 'data' .. '/site',
       }
       require('nvim-treesitter').install(PARSERS)
 
@@ -71,14 +71,14 @@ return {
         move = { set_jumps = true },
       }
 
-      local swap = require('nvim-treesitter-textobjects.swap')
-      local move = require('nvim-treesitter-textobjects.move')
+      local swap = require 'nvim-treesitter-textobjects.swap'
+      local move = require 'nvim-treesitter-textobjects.move'
 
       vim.keymap.set('n', '<leader><leader>s', function()
-        swap.swap_next('@parameter.inner')
+        swap.swap_next '@parameter.inner'
       end, { desc = 'Swap with next parameter' })
       vim.keymap.set('n', '<leader><leader>S', function()
-        swap.swap_previous('@parameter.inner')
+        swap.swap_previous '@parameter.inner'
       end, { desc = 'Swap with previous parameter' })
 
       vim.keymap.set({ 'n', 'x', 'o' }, ']m', function()
@@ -130,7 +130,7 @@ return {
   {
     'nvim-treesitter/nvim-treesitter-context',
     opts = {
-      max_lines = 7,
+      max_lines = 1,
     },
   },
 }

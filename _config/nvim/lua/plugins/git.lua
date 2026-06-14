@@ -5,8 +5,12 @@ return {
     keys = {
       { '[c', '<cmd>Gitsigns prev_hunk<CR>' },
       { ']c', '<cmd>Gitsigns next_hunk<CR>' },
+      { '<leader>c[', '<cmd>Gitsigns change_base HEAD<CR>', desc = 'Gitsigns base: HEAD (incl. staged)' },
+      { '<leader>c]', '<cmd>Gitsigns change_base<CR>', desc = 'Gitsigns base: index (unstaged only)' },
     },
-    opts = {},
+    opts = {
+      base = 'HEAD',
+    },
   },
 
   {

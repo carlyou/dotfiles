@@ -89,12 +89,12 @@ config.keys = {
 	},
 	{
 		key = "k",
-		mods = "CTRL",
+		mods = "CTRL|SHIFT",
 		action = act.SendKey({ key = "PageUp" }),
 	},
 	{
 		key = "j",
-		mods = "CTRL",
+		mods = "CTRL|SHIFT",
 		action = act.SendKey({ key = "PageDown" }),
 	},
 	{
@@ -127,16 +127,16 @@ config.keys = {
 		mods = "CTRL|SHIFT",
 		action = act.ActivatePaneDirection("Right"),
 	},
-	{
-		key = "k",
-		mods = "CTRL|SHIFT",
-		action = act.ActivatePaneDirection("Up"),
-	},
-	{
-		key = "j",
-		mods = "CTRL|SHIFT",
-		action = act.ActivatePaneDirection("Down"),
-	},
+	--{
+	--key = "k",
+	--mods = "CTRL|SHIFT",
+	--action = act.ActivatePaneDirection("Up"),
+	--},
+	--{
+	--key = "j",
+	--mods = "CTRL|SHIFT",
+	--action = act.ActivatePaneDirection("Down"),
+	--},
 	{
 		key = "x",
 		mods = "CTRL|SHIFT",

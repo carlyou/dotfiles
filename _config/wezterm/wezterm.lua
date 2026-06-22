@@ -88,12 +88,12 @@ config.keys = {
 		action = act.SendKey({ key = "RightArrow" }),
 	},
 	{
-		key = "k",
+		key = "u",
 		mods = "CTRL|SHIFT",
 		action = act.SendKey({ key = "PageUp" }),
 	},
 	{
-		key = "j",
+		key = "d",
 		mods = "CTRL|SHIFT",
 		action = act.SendKey({ key = "PageDown" }),
 	},
@@ -127,16 +127,16 @@ config.keys = {
 		mods = "CTRL|SHIFT",
 		action = act.ActivatePaneDirection("Right"),
 	},
-	--{
-	--key = "k",
-	--mods = "CTRL|SHIFT",
-	--action = act.ActivatePaneDirection("Up"),
-	--},
-	--{
-	--key = "j",
-	--mods = "CTRL|SHIFT",
-	--action = act.ActivatePaneDirection("Down"),
-	--},
+	{
+		key = "k",
+		mods = "CTRL|SHIFT",
+		action = act.ActivatePaneDirection("Up"),
+	},
+	{
+		key = "j",
+		mods = "CTRL|SHIFT",
+		action = act.ActivatePaneDirection("Down"),
+	},
 	{
 		key = "x",
 		mods = "CTRL|SHIFT",
@@ -164,7 +164,7 @@ table.insert(copy_mode, {
 	mods = "NONE",
 	action = act.Multiple({
 		act.CopyTo("ClipboardAndPrimarySelection"),
-		act.CopyMode("Close"),
+		act.CopyMode("ClearSelectionMode"),
 	}),
 })
 table.insert(copy_mode, {
@@ -174,11 +174,80 @@ table.insert(copy_mode, {
 		-- select cursor line
 		act.SelectTextAtMouseCursor("Line"),
 		act.CopyTo("ClipboardAndPrimarySelection"),
-		act.CopyMode("Close"),
+		act.CopyMode("ClearSelectionMode"),
+	}),
+})
+-- Jump between shell prompts/outputs (semantic zones) like vim's { and }.
+-- Requires shell integration (OSC 133) to be active in your shell.
+table.insert(copy_mode, {
+	key = "{",
+	mods = "SHIFT",
+	action = act.CopyMode("MoveBackwardSemanticZone"),
+})
+table.insert(copy_mode, {
+	key = "}",
+	mods = "SHIFT",
+	action = act.CopyMode("MoveForwardSemanticZone"),
+})
+-- Vim-style search: / to start, n/N to cycle matches from copy mode.
+-- Start case-insensitive (vim-ish); Ctrl+R cycles case-sensitive/regex.
+table.insert(copy_mode, {
+	key = "/",
+	mods = "NONE",
+	action = act.Search({ CaseInSensitiveString = "" }),
+})
+table.insert(copy_mode, {
+	key = "n",
+	mods = "NONE",
+	action = act.CopyMode("NextMatch"),
+})
+table.insert(copy_mode, {
+	key = "N",
+	mods = "SHIFT",
+	action = act.CopyMode("PriorMatch"),
+})
+
+-- i exits copy mode (vim: normal -> insert; here, back to the live terminal).
+table.insert(copy_mode, {
+	key = "i",
+	mods = "NONE",
+	action = act.CopyMode("Close"),
+})
+
+-- Vim-style Esc: clear search highlights / selection but stay in copy mode.
+-- Use i or Ctrl+C to actually exit copy mode. (Overrides the default Close;
+-- later bindings for the same key win.)
+table.insert(copy_mode, {
+	key = "Escape",
+	mods = "NONE",
+	action = act.Multiple({
+		act.CopyMode("ClearPattern"),
+		act.CopyMode("ClearSelectionMode"),
+	}),
+})
+
+-- search_mode tweaks (appended overrides; last binding for a key wins):
+--   Enter  -> commit the pattern and drop back to copy-mode navigation
+--             (default jumps to prior match while staying in search).
+--   Escape -> cancel the search and return to copy mode, without exiting it
+--             (default Close exits copy mode entirely).
+local search_mode = wezterm.gui.default_key_tables().search_mode
+table.insert(search_mode, {
+	key = "Enter",
+	mods = "NONE",
+	action = act.CopyMode("AcceptPattern"),
+})
+table.insert(search_mode, {
+	key = "Escape",
+	mods = "NONE",
+	action = act.Multiple({
+		act.CopyMode("ClearPattern"),
+		act.CopyMode("AcceptPattern"),
 	}),
 })
 config.key_tables = {
 	copy_mode = copy_mode,
+	search_mode = search_mode,
 }
 
 --config.color_scheme = "Solarized Light (Gogh)"

@@ -58,6 +58,27 @@ return {
     keys = {
       { '<leader>acc', '<cmd>ClaudeCode<cr>', desc = '[a]i [c]laude: Open/Toggle claude [c]ode' },
       { '<leader>acf', '<cmd>ClaudeCodeFocus<cr>', desc = '[a]i [c]laude: [f]ocus' },
+      -- Open/toggle in a chosen window style. NOTE: the style is locked when the
+      -- Claude session starts; whichever you press first from a closed state wins.
+      -- To actually switch styles you must close (ends the session) and reopen.
+      {
+        '<leader>acF',
+        function()
+          require('claudecode.terminal').toggle({
+            snacks_win_opts = { position = 'float', width = 0.85, height = 0.85, border = 'rounded' },
+          })
+        end,
+        desc = '[a]i [c]laude: toggle [F]loating',
+      },
+      {
+        '<leader>acS',
+        function()
+          require('claudecode.terminal').toggle({
+            snacks_win_opts = { position = 'right', width = 0.35 },
+          })
+        end,
+        desc = '[a]i [c]laude: toggle [S]plit',
+      },
       { '<leader>acb', '<cmd>ClaudeCodeAdd %:p<cr>', desc = '[a]i [c]laude: send current [b]uffer' },
       { '<leader>acs', '<cmd>ClaudeCodeSend<cr>', mode = { 'n', 'v' }, desc = '[a]i [c]laude: send selected content' },
       {

@@ -47,9 +47,9 @@ config.initial_cols = 160
 
 config.window_decorations = "RESIZE"
 config.window_background_opacity = 0.9
-config.macos_window_background_blur = 20
+config.macos_window_background_blur = 50
 config.inactive_pane_hsb = {
-	saturation = 0.5,
+	saturation = 0.7,
 	brightness = 0.7,
 }
 
@@ -59,7 +59,7 @@ wezterm.on("window-focus-changed", function(window, pane)
 	if window:is_focused() then
 		overrides.window_background_opacity = 0.9
 	else
-		overrides.window_background_opacity = 0.6
+		overrides.window_background_opacity = 0.8
 	end
 	window:set_config_overrides(overrides)
 end)

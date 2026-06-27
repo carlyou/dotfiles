@@ -49,6 +49,7 @@ return {
       terminal_cmd = '~/.local/bin/claude',
       terminal = {
         provider = 'snacks',
+        snacks_win_opts = { position = 'float', width = 0.85, height = 0.85, border = 'rounded' },
       },
       diff_opts = {
         keep_terminal_open = true,
@@ -57,6 +58,7 @@ return {
     config = true,
     keys = {
       { '<leader>acc', '<cmd>ClaudeCode<cr>', desc = '[a]i [c]laude: Open/Toggle claude [c]ode' },
+      { '<C-a>', '<cmd>ClaudeCode<cr>', mode = { 'n', 't' }, desc = '[a]i [c]laude: Open/Toggle claude [c]ode' },
       { '<leader>acf', '<cmd>ClaudeCodeFocus<cr>', desc = '[a]i [c]laude: [f]ocus' },
       -- Open/toggle in a chosen window style. NOTE: the style is locked when the
       -- Claude session starts; whichever you press first from a closed state wins.

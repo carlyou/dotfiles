@@ -67,6 +67,29 @@ else
   fi
 fi
 
+# Install tree-sitter CLI (required by nvim-treesitter main branch to compile parsers)
+# Prebuilt binary from GitHub releases; apt has no recent package and there's no brew here.
+if command -v tree-sitter &> /dev/null; then
+  echo -e "\033[32m✅ tree-sitter ($(tree-sitter --version)) is already installed\033[0m"
+else
+  case "$(uname -m)" in
+    x86_64|amd64) TS_ARCH="x64" ;;
+    aarch64|arm64) TS_ARCH="arm64" ;;
+    *) TS_ARCH="" ;;
+  esac
+  if [ -z "$TS_ARCH" ]; then
+    echo -e "\033[31m❌ Unsupported architecture for tree-sitter release: $(uname -m)\033[0m"
+  else
+    echo -e "\033[34m⬇️ Installing tree-sitter CLI (linux-$TS_ARCH) from GitHub releases...\033[0m"
+    mkdir -p "$HOME/.local/bin"
+    curl -fsSL -o /tmp/tree-sitter.gz "https://github.com/tree-sitter/tree-sitter/releases/latest/download/tree-sitter-linux-${TS_ARCH}.gz"
+    gunzip -f /tmp/tree-sitter.gz
+    chmod +x /tmp/tree-sitter
+    mv -f /tmp/tree-sitter "$HOME/.local/bin/tree-sitter"
+    echo -e "\033[32m✅ tree-sitter installed ($("$HOME/.local/bin/tree-sitter" --version))\033[0m"
+  fi
+fi
+
 # Install fzf (from git for latest version with --zsh support)
 if [ -d "$HOME/projects/fzf" ]; then
   echo -e "\033[32m✅ fzf is already installed\033[0m"
@@ -80,7 +103,7 @@ fi
 # Install Oh My Zsh
 if [ ! -d "$HOME/.oh-my-zsh" ]; then
   echo -e "\033[34m⬇️ Installing Oh My Zsh...\033[0m"
-  sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+  sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended --keep-zshrc
 else
   echo -e "\033[32m✅ Oh My Zsh is already installed\033[0m"
 fi
@@ -100,16 +123,6 @@ if [ -d "$ZSH_CUSTOM_DIR/themes/powerlevel10k" ]; then
 else
   echo -e "\033[34m⬇️ Installing Powerlevel10k...\033[0m"
   git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "$ZSH_CUSTOM_DIR/themes/powerlevel10k"
-fi
-
-# Install TPM (Tmux Plugin Manager)
-TPM_DIR="$HOME/.config/tmux/plugins/tpm"
-if [ -d "$TPM_DIR" ]; then
-  echo -e "\033[32m✅ TPM is already installed\033[0m"
-else
-  echo -e "\033[34m⬇️ Installing TPM (Tmux Plugin Manager)...\033[0m"
-  mkdir -p "$(dirname "$TPM_DIR")"
-  git clone https://github.com/tmux-plugins/tpm "$TPM_DIR"
 fi
 
 # Install uv (Python package manager)
@@ -152,12 +165,12 @@ fi
 echo -e "\033[34m🔗 Creating symlinks...\033[0m"
 
 # file: ~/.zshrc
-if [ ! -e ~/.zshrc ] || [ -L ~/.zshrc ]; then
-  ln -sfn "$(pwd)/_zshrc" ~/.zshrc
-  echo -e "\033[32m✅ ~/.zshrc symlink created\033[0m"
-else
-  echo -e "\033[33m⚠️  ~/.zshrc already exists (not a symlink, skipping)\033[0m"
+if [ -e ~/.zshrc ] && [ ! -L ~/.zshrc ]; then
+  mv ~/.zshrc ~/.zshrc.pre-dotfiles
+  echo -e "\033[33mℹ️  Backed up existing ~/.zshrc to ~/.zshrc.pre-dotfiles\033[0m"
 fi
+ln -sfn "$(pwd)/_zshrc" ~/.zshrc
+echo -e "\033[32m✅ ~/.zshrc symlink created\033[0m"
 
 # file: ~/.gitignore_global
 if [ ! -e ~/.gitignore_global ] || [ -L ~/.gitignore_global ]; then
@@ -182,13 +195,24 @@ folders="
 
 [ ! -d ~/.config ] && mkdir -p ~/.config
 for folder in $folders; do
-  if [ ! -e ~/.config/$folder ] || [ -L ~/.config/$folder ]; then
-    ln -sfn "$(pwd)/_config/$folder" ~/.config/$folder
-    echo -e "\033[32m✅ ~/.config/$folder symlink created\033[0m"
-  else
-    echo -e "\033[33m⚠️  ~/.config/$folder already exists (not a symlink, skipping)\033[0m"
+  if [ -e ~/.config/$folder ] && [ ! -L ~/.config/$folder ]; then
+    mv ~/.config/$folder ~/.config/$folder.pre-dotfiles
+    echo -e "\033[33mℹ️  Backed up existing ~/.config/$folder to ~/.config/$folder.pre-dotfiles\033[0m"
   fi
+  ln -sfn "$(pwd)/_config/$folder" ~/.config/$folder
+  echo -e "\033[32m✅ ~/.config/$folder symlink created\033[0m"
 done
+
+# Install TPM into the (now symlinked) tmux config dir. Must run AFTER the
+# symlink above, or it creates a real ~/.config/tmux that blocks the symlink.
+TPM_DIR="$HOME/.config/tmux/plugins/tpm"
+if [ -d "$TPM_DIR" ]; then
+  echo -e "\033[32m✅ TPM is already installed\033[0m"
+else
+  echo -e "\033[34m⬇️ Installing TPM (Tmux Plugin Manager)...\033[0m"
+  mkdir -p "$(dirname "$TPM_DIR")"
+  git clone https://github.com/tmux-plugins/tpm "$TPM_DIR"
+fi
 
 # Python virtual environments
 echo -e "\033[34m🐍 Setting up Python virtual environments...\033[0m"

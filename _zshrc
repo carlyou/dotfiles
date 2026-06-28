@@ -193,16 +193,25 @@ vim_listen() {
 }
 
 
-# Connect to neovim server with neovide
+# Connect to a remote headless neovim (started with `vl`) via neovide.
+# neovide's --server opens a raw TCP socket, so we SSH-tunnel the port first
+# and point neovide at localhost.
 vim_connect() {
-  NVIM_HOST=$1
-  echo "Neovim connecting to host $NVIM_HOST"
-  if [ -z "$NVIM_HOST" ]; then
-    echo "Usage: nvim_connect <host>"
+  local target=$1
+  if [[ "$target" != *:* ]]; then
+    echo "Usage: vim_connect <sshhost>:<port>"
     return 1
   fi
+  local host=${target%%:*}
+  local port=${target##*:}
 
-  neovide --fork --server "$NVIM_HOST"
+  if ! lsof -nP -iTCP:"${port}" -sTCP:LISTEN >/dev/null 2>&1; then
+    echo "Tunneling ${host}:${port} → localhost:${port}…"
+    ssh -fN -L "${port}:localhost:${port}" "${host}" || return 1
+  fi
+
+  echo "Neovim connecting to localhost:${port}"
+  neovide --fork --server "localhost:${port}"
 }
 
 alias vim='nvim'

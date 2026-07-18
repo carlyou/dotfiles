@@ -9,8 +9,8 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 vim.api.nvim_create_autocmd('FocusLost', {
   desc = 'Set transparency to 20% when losing focus',
   callback = function()
-    vim.g.neovide_opacity = 0.6
-    vim.g.neovide_normal_opacity = 0.6
+    vim.g.neovide_opacity = 0.8
+    vim.g.neovide_normal_opacity = 0.8
   end,
 })
 

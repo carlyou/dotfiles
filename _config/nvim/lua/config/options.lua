@@ -52,6 +52,44 @@ vim.api.nvim_create_autocmd('UIEnter', {
   end,
 })
 
+-- Window titlebar: host + file, so local and `vc <host>` windows are
+-- distinguishable. hostname() runs on the nvim side, so it reports the
+-- remote box in `--server` sessions.
+vim.opt.title = true
+vim.opt.titlestring = ' '
+
+-- Tabline: label each tab with the git repo its active buffer lives in.
+-- Cached per path; vim.fs.root walks for .git (no git subprocess).
+local repo_cache = {}
+local function repo_for(path)
+  if not path or path == '' then
+    return nil
+  end
+  if repo_cache[path] == nil then
+    local root = vim.fs.root(path, '.git')
+    repo_cache[path] = root and vim.fs.basename(root) or false
+  end
+  return repo_cache[path] or nil
+end
+
+function _G.repo_tabline()
+  local cur = vim.api.nvim_get_current_tabpage()
+  local parts = {}
+  for i, tab in ipairs(vim.api.nvim_list_tabpages()) do
+    local buf = vim.api.nvim_win_get_buf(vim.api.nvim_tabpage_get_win(tab))
+    local name = vim.api.nvim_buf_get_name(buf)
+    local src = name ~= '' and name or vim.fn.getcwd(-1, i)
+    local label = repo_for(src) or (name ~= '' and vim.fs.basename(name)) or '[No Name]'
+    local mod = vim.bo[buf].modified and ' +' or ''
+    local hl = tab == cur and '%#TabLineSel#' or '%#TabLine#'
+    parts[#parts + 1] = hl .. '%' .. i .. 'T ' .. i .. ' ' .. label .. mod .. ' '
+  end
+  parts[#parts + 1] = '%#TabLineFill#%T'
+  return table.concat(parts)
+end
+
+vim.opt.tabline = '%!v:lua.repo_tabline()'
+
 -- Tab settings
 vim.opt.expandtab = true
 vim.opt.tabstop = 2

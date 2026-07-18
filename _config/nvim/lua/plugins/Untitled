@@ -1,0 +1,288 @@
+{
+  "aliases": [
+    {
+      "model_description": "The latest iteration of TypeSafe's speed model",
+      "name": "speed_latest",
+      "release_date": "2025-12-12T00:28:06.654752+00:00",
+      "released": true,
+      "tag_name": "speed_latest",
+      "tags": []
+    },
+    {
+      "model_description": "Model to use with foodbot",
+      "name": "foodbot_model",
+      "release_date": "2025-12-16T19:57:42.681180+00:00",
+      "released": false,
+      "tag_name": "foodbot_model",
+      "tags": []
+    },
+    {
+      "model_description": "Typesafe medium-sized model for better intelligence",
+      "name": "speed_latest_medium",
+      "release_date": "2026-01-21T18:52:26.447951+00:00",
+      "released": true,
+      "tag_name": "speed_latest_medium",
+      "tags": []
+    }
+  ],
+  "models": [
+    {
+      "connman_configs": [
+        {
+          "availability": null,
+          "backoff_config": null,
+          "connection_config": {
+            "modal_model_name": "speed_v8.1_even_bee",
+            "type": "modal"
+          },
+          "model_name": "speed_v8.1_even_bee",
+          "model_pool_configs": [
+            {
+              "backoff_config": null,
+              "connection_config": {
+                "modal_model_name": "speed_v8.1_even_bee",
+                "type": "modal"
+              },
+              "pool_scaling_config": {
+                "max_size": null,
+                "priority": 0,
+                "target_pool_weight": 1
+              }
+            }
+          ],
+          "model_priority": "production",
+          "scaling_config": {
+            "downscale_delay_s": 60,
+            "downscale_factor": 0.3,
+            "max_replicas": 10,
+            "min_replicas": 2,
+            "queue_per_replica_allowed_size": 1,
+            "upscale_delay_s": 10,
+            "upscale_factor": 1
+          }
+        }
+      ],
+      "model_name": "speed_v8.1_even_bee",
+      "last_modified_by": "diogo",
+      "release_date": "2026-02-20T22:17:01.333405+00:00",
+      "model_description": "Even Bee",
+      "last_modified": "2026-03-15T05:29:30.602777Z",
+      "research_model_information": null,
+      "override_config": false,
+      "routing_configs": [
+        {
+          "config": {
+            "connman_model_name": "speed_v8.1_even_bee",
+            "type": "connman"
+          },
+          "default": false,
+          "name": "connman"
+        }
+      ],
+      "tags": [],
+      "availability": {
+        "default_schedule": "never",
+        "hold_until": null
+      },
+      "released": false,
+      "flag_name": "speed_v8.1_even_bee"
+    },
+    {
+      "connman_configs": [
+        {
+          "availability": null,
+          "backoff_config": null,
+          "connection_config": null,
+          "model_name": "speed_v9_angry_pig",
+          "model_pool_configs": [
+            {
+              "backoff_config": null,
+              "connection_config": {
+                "checkpoint_path": "gs://typesafe_storage/output/erik/flow/260228_speed_v9/merge/s9x0_merge-1-2-3-4__q3-8b-c__angry_pig/e-1/reference",
+                "gpu_type": "very_big",
+                "model_repository_name": null,
+                "sampling_params": {
+                  "additional_config": {
+                    "encoding_state_config": {
+                      "base_position_budget": 16384,
+                      "encoded_example_split": false,
+                      "max_context_length": 65536,
+                      "tokenizer_config": {
+                        "use_batch_tokenization": true
+                      }
+                    }
+                  },
+                  "vllm_backend": true
+                },
+                "type": "modal_dynamic"
+              },
+              "pool_scaling_config": {
+                "max_size": null,
+                "priority": 0,
+                "target_pool_weight": 100
+              }
+            },
+            {
+              "backoff_config": null,
+              "connection_config": {
+                "memory": null,
+                "disk_size": null,
+                "reservations": [],
+                "model_repository_name": null,
+                "accelerator": "B200:1",
+                "cpus": null,
+                "base_model_name": null,
+                "infra": [
+                  "nebius/us-central1"
+                ],
+                "icebeam_version": null,
+                "inference_image": "905418454283.dkr.ecr.us-east-1.amazonaws.com/typesafe-frens:adc4ce36768cebe9ddf11c1c780dea2ea68179b3",
+                "use_spot": true,
+                "type": "sky",
+                "checkpoint_path": "gs://typesafe_storage/output/erik/flow/260228_speed_v9/merge/s9x0_merge-1-2-3-4__q3-8b-c__angry_pig/e-1/reference",
+                "sampling_params": {
+                  "additional_config": {
+                    "encoding_state_config": {
+                      "base_position_budget": 16384,
+                      "encoded_example_split": false,
+                      "max_context_length": 65536,
+                      "tokenizer_config": {
+                        "use_batch_tokenization": true
+                      }
+                    }
+                  },
+                  "vllm_backend": true
+                }
+              },
+              "pool_scaling_config": {
+                "max_size": null,
+                "priority": 0,
+                "target_pool_weight": 100
+              }
+            }
+          ],
+          "model_priority": "production",
+          "scaling_config": {
+            "downscale_delay_s": 60,
+            "downscale_factor": 0.3,
+            "max_replicas": 10,
+            "min_replicas": 2,
+            "queue_per_replica_allowed_size": 1,
+            "upscale_delay_s": 10,
+            "upscale_factor": 1
+          }
+        }
+      ],
+      "model_name": "speed_v9_angry_pig",
+      "last_modified_by": "carl",
+      "release_date": "2026-03-13T23:37:36.607838+00:00",
+      "model_description": "",
+      "last_modified": "2026-07-14T18:15:41.750758Z",
+      "research_model_information": {
+        "checkpoint_path": "gs://typesafe_storage/output/erik/flow/260228_speed_v9/merge/s9x0_merge-1-2-3-4__q3-8b-c__angry_pig/e-1/reference",
+        "cloned_from": null,
+        "research_model_name": "s9x0_merge-1-2-3-4__q3-8b-c__angry_pig"
+      },
+      "override_config": false,
+      "routing_configs": [
+        {
+          "config": {
+            "connman_model_name": "speed_v9_angry_pig",
+            "type": "connman"
+          },
+          "default": false,
+          "name": "connman"
+        }
+      ],
+      "tags": [
+        "research"
+      ],
+      "availability": {
+        "default_schedule": "always",
+        "hold_until": null
+      },
+      "released": true,
+      "flag_name": "research-model-speed_v9_angry_pig"
+    },
+    {
+      "connman_configs": [
+        {
+          "availability": null,
+          "backoff_config": null,
+          "connection_config": null,
+          "model_name": "speed_v10_mango_loco",
+          "model_pool_configs": [
+            {
+              "backoff_config": null,
+              "connection_config": {
+                "checkpoint_path": "gs://typesafe_storage/output/clayton/dev_quant/flow/260521_speed_v10x0/s10x0_merge-1-2-3-4__q3-8b-c__mango_loco/e-1/reference",
+                "gpu_type": "very_big",
+                "model_repository_name": null,
+                "sampling_params": {
+                  "additional_config": {
+                    "encoding_state_config": {
+                      "base_position_budget": 32768,
+                      "encoded_example_split": false,
+                      "max_context_length": 65536,
+                      "tokenizer_config": {
+                        "use_batch_tokenization": true
+                      }
+                    }
+                  },
+                  "vllm_backend": true
+                },
+                "type": "modal_dynamic"
+              },
+              "pool_scaling_config": {
+                "max_size": null,
+                "priority": 0,
+                "target_pool_weight": 100
+              }
+            }
+          ],
+          "model_priority": "production",
+          "scaling_config": {
+            "downscale_delay_s": 60,
+            "downscale_factor": 0.3,
+            "max_replicas": 20,
+            "min_replicas": 4,
+            "queue_per_replica_allowed_size": 1,
+            "upscale_delay_s": 10,
+            "upscale_factor": 1
+          }
+        }
+      ],
+      "model_name": "speed_v10_mango_loco",
+      "last_modified_by": "noam",
+      "release_date": "2026-06-16T21:34:34.723916+00:00",
+      "model_description": "",
+      "last_modified": "2026-07-09T17:40:58.984045Z",
+      "research_model_information": {
+        "checkpoint_path": "gs://typesafe_storage/output/clayton/dev_quant/flow/260521_speed_v10x0/s10x0_merge-1-2-3-4__q3-8b-c__mango_loco/e-1/reference",
+        "cloned_from": null,
+        "research_model_name": "s10x0_merge-1-2-3-4__q3-8b-c__mango_loco"
+      },
+      "override_config": false,
+      "routing_configs": [
+        {
+          "config": {
+            "connman_model_name": "speed_v10_mango_loco",
+            "type": "connman"
+          },
+          "default": false,
+          "name": "connman"
+        }
+      ],
+      "tags": [
+        "speed_latest",
+        "research"
+      ],
+      "availability": {
+        "default_schedule": "always",
+        "hold_until": null
+      },
+      "released": true,
+      "flag_name": "research-model-speed_v10_mango_loco"
+    }
+  ]
+}

@@ -105,6 +105,7 @@ return {
         content = {
           active = function()
             local mode, mode_hl = statusline.section_mode { trunc_width = 120 }
+            local git = MiniStatusline.section_git { trunc_width = 40 }
             local search = statusline.section_searchcount { trunc_width = 75 }
             local repo = section_repo()
             local filename = section_filename_gitroot()
@@ -118,7 +119,7 @@ return {
               '%<',
               { hl = 'MiniStatuslineFilename', strings = { filename, modified } },
               '%=',
-              { hl = 'MiniStatuslineFileinfo', strings = { fileinfo } },
+              { hl = 'MiniStatuslineFileinfo', strings = { fileinfo, git } },
               { hl = mode_hl, strings = { search, location } },
             }
           end,

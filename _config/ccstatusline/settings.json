@@ -1,0 +1,88 @@
+{
+  "version": 3,
+  "lines": [
+    [
+      {
+        "id": "3213cd64-4c82-4b3f-9410-946b04ce2b88",
+        "type": "flex-separator"
+      },
+      {
+        "id": "752fff72-c177-4263-aad6-06ed479c47aa",
+        "type": "custom-command",
+        "commandPath": "jq -r '\"\\(.model.display_name? // .model.id? // .model // \"unknown\") (\\(.effort.level? // \"low\"))\"'",
+        "color": "white",
+        "dim": true
+      },
+      {
+        "id": "6fa7bb72-0af9-4984-bad5-2630ae7dc47f",
+        "type": "session-cost",
+        "rawValue": true,
+        "color": "brightBlue",
+        "dim": true
+      },
+      {
+        "id": "8f5b7e5e-2f2c-4f8c-a67b-52e5b0fe9ffe",
+        "type": "session-usage",
+        "rawValue": true,
+        "merge": "no-padding",
+        "color": "gradient:vice",
+        "dim": true
+      },
+      {
+        "id": "usage-separator",
+        "type": "custom-text",
+        "customText": "/",
+        "merge": "no-padding",
+        "color": "gradient:vice",
+        "dim": true
+      },
+      {
+        "id": "usage-weekly",
+        "type": "weekly-usage",
+        "rawValue": true,
+        "color": "gradient:vice",
+        "dim": true
+      },
+      {
+        "id": "28219e5d-73f0-4365-85d4-9b11d513b412",
+        "type": "context-bar",
+        "rawValue": true,
+        "color": "gradient:cristal",
+        "dim": true
+      },
+      {
+        "id": "session-tokens-input",
+        "type": "custom-command",
+        "commandPath": "node \"$HOME/.config/ccstatusline/session-tokens.js\"",
+        "color": "gradient:vice",
+        "dim": true
+      }
+    ]
+  ],
+  "flexMode": "full-until-compact",
+  "compactThreshold": 60,
+  "colorLevel": 2,
+  "defaultPadding": " ",
+  "inheritSeparatorColors": false,
+  "globalBold": false,
+  "gitCacheTtlSeconds": 5,
+  "minimalistMode": false,
+  "powerline": {
+    "enabled": true,
+    "separators": [
+      ""
+    ],
+    "separatorInvertBackground": [
+      false
+    ],
+    "startCaps": [],
+    "endCaps": [],
+    "theme": "custom",
+    "autoAlign": false,
+    "continueThemeAcrossLines": false
+  },
+  "installation": {
+    "method": "auto-update",
+    "packageManager": "npm"
+  }
+}

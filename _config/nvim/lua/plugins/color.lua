@@ -32,6 +32,8 @@ return {
   { 'rebelot/kanagawa.nvim', opts = {}, enabled = false },
 
   { 'bluz71/vim-moonfly-colors', name = 'moonfly' },
+  { 'rose-pine/neovim' },
+  { 'sainnhe/everforest' },
   { 'rmehri01/onenord.nvim' },
   { 'shaunsingh/nord.nvim' },
   { 'EdenEast/nightfox.nvim' },

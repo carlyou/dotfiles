@@ -49,7 +49,7 @@ return {
       terminal_cmd = '~/.local/bin/claude',
       terminal = {
         provider = 'snacks',
-        snacks_win_opts = { position = 'float', width = 0.85, height = 0.85, border = 'rounded' },
+        snacks_win_opts = { position = 'float', width = 0.9, height = 0.9, border = 'rounded' },
       },
       diff_opts = {
         keep_terminal_open = true,
@@ -59,6 +59,7 @@ return {
     keys = {
       { '<leader>acc', '<cmd>ClaudeCode<cr>', desc = '[a]i [c]laude: Open/Toggle claude [c]ode' },
       { '<C-a>', '<cmd>ClaudeCode<cr>', mode = { 'n', 't' }, desc = '[a]i [c]laude: Open/Toggle claude [c]ode' },
+      { '<C-a>', '<cmd>ClaudeCodeSend<cr>', mode = 'v', desc = '[a]i [c]laude: send selection to claude code' },
       { '<leader>acf', '<cmd>ClaudeCodeFocus<cr>', desc = '[a]i [c]laude: [f]ocus' },
       -- Open/toggle in a chosen window style. NOTE: the style is locked when the
       -- Claude session starts; whichever you press first from a closed state wins.
@@ -66,18 +67,18 @@ return {
       {
         '<leader>acF',
         function()
-          require('claudecode.terminal').toggle({
-            snacks_win_opts = { position = 'float', width = 0.85, height = 0.85, border = 'rounded' },
-          })
+          require('claudecode.terminal').toggle {
+            snacks_win_opts = { position = 'float', width = 0.9, height = 0.9, border = 'rounded' },
+          }
         end,
         desc = '[a]i [c]laude: toggle [F]loating',
       },
       {
         '<leader>acS',
         function()
-          require('claudecode.terminal').toggle({
+          require('claudecode.terminal').toggle {
             snacks_win_opts = { position = 'right', width = 0.35 },
-          })
+          }
         end,
         desc = '[a]i [c]laude: toggle [S]plit',
       },
@@ -92,6 +93,58 @@ return {
       -- Diff management
       { '<leader>acy', '<cmd>ClaudeCodeDiffAccept<cr>', desc = 'Accept diff' },
       { '<leader>acn', '<cmd>ClaudeCodeDiffDeny<cr>', desc = 'Deny diff' },
+    },
+  },
+
+  -- codex
+  {
+    'kkrampis/codex.nvim',
+    lazy = true,
+    cmd = { 'Codex', 'CodexToggle' }, -- Optional: Load only on command execution
+    keys = {
+      {
+        '<leader>axc', -- Change this to your preferred keybinding
+        function()
+          require('codex').toggle()
+        end,
+        desc = 'Toggle Codex popup or side-panel',
+        mode = { 'n', 't' },
+      },
+      {
+        '<C-x>', -- Change this to your preferred keybinding
+        function()
+          require('codex').toggle()
+        end,
+        desc = 'Toggle Codex popup or side-panel',
+        mode = { 'n', 't' },
+      },
+      {
+        '<C-x>',
+        function()
+          local lines = vim.api.nvim_buf_get_lines(0, vim.fn.line "'<" - 1, vim.fn.line "'>", false)
+          require('codex').open()
+          -- codex.nvim has no public "send" API; state.job is its internal terminal job handle
+          local job = require('codex.state').job
+          if job then
+            vim.api.nvim_chan_send(job, table.concat(lines, '\n') .. '\n')
+          end
+        end,
+        desc = 'Send selection to Codex',
+        mode = 'v',
+      },
+    },
+    opts = {
+      keymaps = {
+        toggle = nil, -- Keybind to toggle Codex window (Disabled by default, watch out for conflicts)
+        quit = '<C-q>', -- Keybind to close the Codex window (default: Ctrl + q)
+      }, -- Disable internal default keymap (<leader>cc -> :CodexToggle)
+      border = 'rounded', -- Options: 'single', 'double', or 'rounded'
+      width = 0.9, -- Width of the floating window (0.0 to 1.0)
+      height = 0.9, -- Height of the floating window (0.0 to 1.0)
+      model = nil, -- Optional: pass a string to use a specific model (e.g., 'o3-mini')
+      autoinstall = true, -- Automatically install the Codex CLI if not found
+      panel = false, -- Open Codex in a side-panel (vertical split) instead of floating window
+      use_buffer = false, -- Capture Codex stdout into a normal buffer instead of a terminal buffer
     },
   },
 

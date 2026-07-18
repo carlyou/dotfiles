@@ -250,9 +250,12 @@ config.key_tables = {
 	search_mode = search_mode,
 }
 
---config.color_scheme = "Solarized Light (Gogh)"
 config.color_scheme = "Tokyo Night Moon"
 --config.color_scheme = "Cobalt2"
+--config.color_scheme = "Rosé Pine Moon (Gogh)"
+--config.color_scheme = "Rosé Pine Dawn (Gogh)"
+--config.color_scheme = "Everforest Light (Gogh)"
+--config.color_scheme = "Everforest (Gogh)"
 
 config.window_padding = {
 	left = "0.5cell",

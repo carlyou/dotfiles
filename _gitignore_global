@@ -11,6 +11,7 @@ Thumbs.db
 
 # LLM local files
 .claude/
+agent_space/
 
 
 .clangd
